@@ -1,6 +1,10 @@
 import React from 'react';
+import styled from 'styled-components';
+
 import logo from './logo.svg';
 import './App.css';
+
+import Battle from './Battle';
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
@@ -23,9 +27,30 @@ const Home: React.FC = ()=> (
   </div>
 );
 
+
+const Navbar = styled.nav `
+  display: inline-block;
+  padding: 1em;
+`;
+
+const Viewport = styled.div `
+  display: inline-block;
+`;
+
 const App: React.FC = ()=> (
   <Router>
-    <Route path="/" exact component={Home} />
+    <Navbar>
+      <ul>
+        <li><Link to="/">Home</Link></li>
+        <li><Link to="/battle">Battle</Link></li>
+      </ul>
+
+    </Navbar>
+    <Viewport>
+      <Route path="/" exact component={Home} />
+      <Route path="/battle" exact component={Battle} />
+    </Viewport>
+
   </Router>
 );
 
