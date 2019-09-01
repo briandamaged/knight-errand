@@ -1,7 +1,9 @@
 FROM node:12
 WORKDIR /usr/src/app
 COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install && mv node_modules ../
+RUN chown -R node: /usr/src && su -c "npm install" node && mv node_modules ../
+
+USER node
 
 # FYI: This is a workaround for the fact that npm only recognizes
 #      binaries at $(cwd)/node_modules/.bin
