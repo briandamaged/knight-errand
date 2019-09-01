@@ -1,15 +1,10 @@
 FROM node:12
 WORKDIR /usr/src/app
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN chown -R node: /usr/src && su -c "npm install" node && mv node_modules ../
+
+RUN chown -R node: /usr/src
 
 USER node
-
-# FYI: This is a workaround for the fact that npm only recognizes
-#      binaries at $(cwd)/node_modules/.bin
-ENV PATH=/usr/src/node_modules/.bin:${PATH}
-
 VOLUME ["/usr/src/app"]
 EXPOSE 3000
 
-CMD npm run start
+CMD npm install && npm run start
