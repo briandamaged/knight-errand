@@ -5,6 +5,7 @@ import logo from './logo.svg';
 import './App.css';
 
 import Battle from './Battle';
+import Shoppe from './mocks/Shoppe';
 
 import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 
@@ -43,12 +44,14 @@ const App: React.FC = ()=> (
       <ul>
         <li><Link to="/">Home</Link></li>
         <li><Link to="/battle">Battle</Link></li>
+        <li><Link to="/shoppe" >Shoppe</Link></li>
       </ul>
 
     </Navbar>
     <Viewport>
       <Route path="/" exact component={Home} />
       <Route path="/battle" exact component={Battle} />
+      <Route path="/shoppe" exact component={Shoppe} />
     </Viewport>
 
   </Router>
