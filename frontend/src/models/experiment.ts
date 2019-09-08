@@ -1,5 +1,16 @@
 
 
+
+export interface Item {
+
+}
+
+
+export interface Agent {
+  
+}
+
+
 export interface Entity {
   id: string;
   name: string;
