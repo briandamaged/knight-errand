@@ -13,3 +13,15 @@ services:
 
     ports:
       - 3000:3000
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/usr/src/app
+    environment:
+      NODE_ENV: development
+
+    ports:
+      - 5000:3000
