@@ -8,11 +8,22 @@ interface State {
 }
 
 class Commands extends React.Component<{}, State> {
+  ws: WebSocket;
+
   constructor(props: {}) {
     super(props);
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+
+    // FIXME:
+    this.ws = new WebSocket("ws://localhost:5000/");
+
+    this.ws.onmessage = (event)=> {
+      this.setState({
+        log: this.state.log.concat(event.data),
+      });
+    }
 
     this.state = {
       value: '',
@@ -28,9 +39,7 @@ class Commands extends React.Component<{}, State> {
   }
 
   handleSubmit(event: FormEvent<HTMLInputElement>) {
-    this.setState({
-      log: this.state.log.concat(this.state.value),
-    });
+    this.ws.send(this.state.value);
     event.preventDefault();
   }
 
