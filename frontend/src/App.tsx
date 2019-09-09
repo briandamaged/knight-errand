@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 
+import Commands from './mocks/Commands';
 import Battle from './Battle';
 import Shoppe from './mocks/Shoppe';
 
@@ -21,12 +22,14 @@ const App: React.FC = ()=> (
   <Router>
     <Navbar>
       <ul>
+        <li><Link to="/">Commands</Link></li>
         <li><Link to="/battle">Battle</Link></li>
         <li><Link to="/shoppe" >Shoppe</Link></li>
       </ul>
 
     </Navbar>
     <Viewport>
+      <Route path="/" exact component={Commands} />
       <Route path="/battle" exact component={Battle} />
       <Route path="/shoppe" exact component={Shoppe} />
     </Viewport>

@@ -1,19 +1,9 @@
 
-const http = require('http');
-
 const WebSocket = require('ws');
-const Koa = require('koa');
 
-const app = new Koa();
-
-app.use(function(ctx) {
-  ctx.body = {
-    status: "OK!",
-  };
-});
 
 const wss = new WebSocket.Server({
-  noServer: true,
+  port: 3000,
 });
 
 wss.on('connection', function connection(ws) {
@@ -27,20 +17,3 @@ wss.on('connection', function connection(ws) {
   }, 1000);
 
 });
-
-
-const server = http.createServer(app.callback());
-
-server.on('upgrade', function(request, socket, head) {
-  wss.handleUpgrade(request, socket, head, function done(ws) {
-    wss.emit('connection', ws, request);
-  });
-});
-
-
-
-server.listen(3000, function() {
-  console.log("Listening");
-});
-
-
