@@ -8,10 +8,18 @@ const Location = require('./Location');
 
 const engine = new GameEngine();
 
+
 const townSquare = new Location({
   name: "Town Square",
   description: "It's really more of a Village Oval, if we're being honest.",
 });
+
+const inn = new Location({
+  name: "The Inn",
+  description: "It's okay.",
+});
+
+
 
 const player = new Player({
   engine,
@@ -26,13 +34,12 @@ const wss = new WebSocket.Server({
 });
 
 wss.on('connection', function connection(ws) {
-  ws.on('message', function incoming(message) {
-    ws.send(`
-${townSquare.name}
--------
-${townSquare.description}
-    `);
-    console.log('received: %s', message);
+  let x = 0;
+  ws.on('message', function incoming(_cmd) {
+    const cmd = JSON.parse(_cmd);
+
+    ws.send(++x);
+
   });
 
 });

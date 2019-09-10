@@ -1,11 +1,19 @@
 
 import React, {FormEvent} from 'react';
-
+import styled from 'styled-components';
 
 interface State {
-  value: string;
+  raw: string;
+  valid: boolean;
   log: string[];
 }
+
+
+const Feedback = styled.pre `
+  border: 1px solid black;
+  padding: 0.5em;
+`;
+
 
 class Commands extends React.Component<{}, State> {
   ws: WebSocket;
@@ -26,33 +34,53 @@ class Commands extends React.Component<{}, State> {
     }
 
     this.state = {
-      value: '',
+      raw: '',
+      valid: false,
       log: [],
     };
   }
 
 
   handleChange(event: FormEvent<HTMLInputElement>) {
+    const raw = event.currentTarget.value;
+
+    let valid;
+    try {
+      JSON.parse(raw);
+      valid = true;
+    } catch(err) {
+      valid = false;
+    }
+
     this.setState({
-      value: event.currentTarget.value,
+      raw: raw,
+      valid: valid,
     });
   }
 
   handleSubmit(event: FormEvent<HTMLInputElement>) {
-    this.ws.send(this.state.value);
+    this.ws.send(this.state.raw);
     event.preventDefault();
   }
 
   render() {
     return (
       <div>
+
         <div>
-          { this.state.log.map((msg, i)=> <pre key={i} >{msg}</pre>) }
+          { this.state.log.map((msg, i)=> <Feedback key={i} >{msg}</Feedback>) }
         </div>
+
         <div>
           <input type="text" onChange={this.handleChange} ></input>
-          <input type="submit" value="Send" onClick={this.handleSubmit}></input>
+          <input
+            type="submit"
+            value="Send"
+            onClick={this.handleSubmit}
+            disabled={!this.state.valid}
+          />
         </div>
+
       </div>
     );
   }
