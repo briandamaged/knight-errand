@@ -34,11 +34,15 @@ const wss = new WebSocket.Server({
 });
 
 wss.on('connection', function connection(ws) {
-  let x = 0;
+
+  engine.on('inform', function(msg) {
+    ws.send(msg);
+  });
+
   ws.on('message', function incoming(_cmd) {
     const cmd = JSON.parse(_cmd);
 
-    ws.send(++x);
+    player.dispatch(cmd);
 
   });
 
