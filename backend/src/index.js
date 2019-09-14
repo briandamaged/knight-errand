@@ -5,6 +5,7 @@ const GameEngine = require('./GameEngine');
 const Player = require('./Player');
 const Location = require('./Location');
 
+const {look} = require('./commands/look');
 
 const engine = new GameEngine();
 
@@ -21,9 +22,7 @@ const inn = new Location({
 
 
 
-function look({sender, target}) {
-  sender.inform(sender.location.description);
-}
+
 
 
 
@@ -36,6 +35,30 @@ function lookHandler({sender, cmd}) {
   }
 }
 
+
+
+
+function eat({sender, target}) {
+  if(!sender.blind) {
+    sender.blind = true;
+    sender.inform("You have gone blind.  Sorry!");
+
+    setTimeout(function() {
+      sender.blind = false;
+      sender.inform("You can see again!");
+    }, 5000);
+  }
+}
+
+
+function eatHandler({sender, cmd}) {
+  if(cmd.name === 'eat') {
+    return ()=> eat({
+      sender: sender,
+      target: cmd.target,
+    });
+  }
+}
 
 
 
@@ -54,6 +77,13 @@ function decipher(raw) {
         name: 'look',
         target: rest,
       };
+
+    case 'eat':
+      return {
+        name: 'eat',
+        target: rest,
+      };
+
   }
 }
 
@@ -70,6 +100,7 @@ wss.on('connection', function connection(ws) {
   });
 
   player.handlers.push(lookHandler);
+  player.handlers.push(eatHandler);
 
   player.on('informed', function(development) {
     ws.send(development);
