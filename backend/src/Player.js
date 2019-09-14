@@ -2,11 +2,12 @@
 const EventEmitter = require('events');
 
 class Player extends EventEmitter {
-  constructor({engine, location, handlers = []}) {
+  constructor({engine, location, inventory = [], handlers = []}) {
     super();
     
     this.engine = engine;
     this.location = location;
+    this.inventory = inventory;
     this.handlers = handlers;
   }
 

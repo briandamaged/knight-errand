@@ -6,6 +6,7 @@ const Player = require('./Player');
 const Location = require('./Location');
 
 const {look} = require('./commands/look');
+const {eat} = require('./commands/eat');
 
 const engine = new GameEngine();
 
@@ -35,22 +36,6 @@ function lookHandler({sender, cmd}) {
   }
 }
 
-
-
-
-function eat({sender, target}) {
-  if(!sender.blind) {
-    sender.blind = true;
-    sender.inform("You have gone blind.  Sorry!");
-
-    setTimeout(function() {
-      sender.blind = false;
-      sender.inform("You can see again!");
-    }, 5000);
-  } else {
-    sender.inform("Well, maybe you would if YOU COULD SEE!!!!")
-  }
-}
 
 
 function eatHandler({sender, cmd}) {
@@ -99,6 +84,14 @@ wss.on('connection', function connection(ws) {
   const player = new Player({
     engine,
     location: townSquare,
+  });
+
+  player.inventory.push({
+    name: "apple",
+    beEatenBy(sender) {
+      sender.blind = true;
+      sender.inform("Oops.  It looks like the apple had already expired.  You're blind now.  Congrats.");
+    }
   });
 
   player.handlers.push(lookHandler);
