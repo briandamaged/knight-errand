@@ -21,12 +21,41 @@ const inn = new Location({
 
 
 
-const player = new Player({
-  engine,
-  location: townSquare,
-});
+function look({sender, target}) {
+  sender.inform(sender.location.description);
+}
 
 
+
+function lookHandler({sender, cmd}) {
+  if(cmd.name === 'look') {
+    return ()=> look({
+      sender,
+      target: cmd.target,
+    });
+  }
+}
+
+
+
+
+/**
+ * Converts a raw input into a command
+ * @param {string} raw 
+ */
+function decipher(raw) {
+  const words = raw.toLowerCase().split(/\s+/);
+  const first = words[0];
+  const rest = words.slice(1);
+
+  switch(first) {
+    case 'look':
+      return {
+        name: 'look',
+        target: rest,
+      };
+  }
+}
 
 
 const wss = new WebSocket.Server({
@@ -35,15 +64,25 @@ const wss = new WebSocket.Server({
 
 wss.on('connection', function connection(ws) {
 
-  engine.on('inform', function(msg) {
-    ws.send(msg);
+  const player = new Player({
+    engine,
+    location: townSquare,
   });
 
-  ws.on('message', function incoming(_cmd) {
-    const cmd = JSON.parse(_cmd);
+  player.handlers.push(lookHandler);
 
-    player.dispatch(cmd);
+  player.on('informed', function(development) {
+    ws.send(development);
+  });
 
+  ws.on('message', function incoming(instruction) {
+    const cmd = decipher(instruction);
+
+    if(cmd) {
+      player.dispatch(cmd);
+    } else {
+      player.inform("I didn't understand your instruction");
+    }
   });
 
 });
