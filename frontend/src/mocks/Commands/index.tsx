@@ -45,9 +45,13 @@ class Commands extends React.Component<{}, State> {
     });
   }
 
-  handleSubmit(event: FormEvent<HTMLInputElement>) {
+  handleSubmit(event: FormEvent<HTMLFormElement>) {
     this.ws.send(this.state.value);
     event.preventDefault();
+
+    this.setState({
+      value: '',
+    });
   }
 
   isValidCommand() {
@@ -62,15 +66,14 @@ class Commands extends React.Component<{}, State> {
           { this.state.log.map((msg, i)=> <Feedback key={i} >{msg}</Feedback>) }
         </div>
 
-        <div>
-          <input type="text" onChange={this.handleChange} ></input>
+        <form onSubmit={this.handleSubmit}>
+          <input type="text" onChange={this.handleChange} value={this.state.value} ></input>
           <input
             type="submit"
             value="Send"
-            onClick={this.handleSubmit}
             disabled={!this.isValidCommand()}
           />
-        </div>
+        </form>
 
       </div>
     );

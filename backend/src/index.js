@@ -47,6 +47,8 @@ function eat({sender, target}) {
       sender.blind = false;
       sender.inform("You can see again!");
     }, 5000);
+  } else {
+    sender.inform("Well, maybe you would if YOU COULD SEE!!!!")
   }
 }
 
