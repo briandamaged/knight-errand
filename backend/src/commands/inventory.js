@@ -1,4 +1,6 @@
 
+const _ = require('lodash');
+
 const {compose} = require('redecor8');
 
 
@@ -6,6 +8,33 @@ const {compose} = require('redecor8');
 function _getItems(sender) {
   return sender.inventory;
 }
+
+
+const handleHallucinations = (
+  (next)=>
+    async function(sender) {
+      const items = await next(sender);
+      if(!sender.hallucinating) {
+        return items;
+      }
+
+      const reportedItems = Array.from(items);
+      while(true) {
+        if(Math.random() < 0.5) {
+          break;
+        }
+
+        reportedItems.push({
+          name: _.sample([
+            "snake", "bicycle", "rainbow",
+            "happiness", "bugs",
+          ]),
+        });
+      }
+
+      return _.shuffle(reportedItems);
+    }
+);
 
 
 /**
@@ -33,6 +62,7 @@ const handleBlindness = (
 );
 
 const getItems = compose([
+  handleHallucinations,
   handleBlindness,
 ])(_getItems);
 
@@ -53,7 +83,7 @@ async function _inventory({sender}) {
   if(items.length === 0) {
     sender.inform("You are not carrying anything");
   } else {
-    const listing = items.map((it)=> ` - ${renderItem(it)}\n`);
+    const listing = items.map((it)=> ` - ${renderItem(it)}`).join("\n");
     sender.inform(`You are carrying:\n${listing}`);
   }
 }

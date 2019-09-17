@@ -111,6 +111,20 @@ wss.on('connection', function connection(ws) {
     }
   });
 
+
+  player.inventory.push({
+    name: "mushroom",
+    beEatenBy(sender) {
+      sender.hallucinating = true;
+      sender.inform("That mushroom tasted like purple, but with dragonfly emeralds.")
+
+      setTimeout(function() {
+        sender.hallucinating = false;
+        sender.inform("The world is boring again.");
+      }, 10000);
+    }
+  })
+
   player.handlers.push(lookHandler);
   player.handlers.push(eatHandler);
   player.handlers.push(inventoryHandler);
