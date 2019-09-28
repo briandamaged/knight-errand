@@ -5,13 +5,7 @@ class Location {
     this.description = description;
   }
 
-  describe() {
-    return `
-${this.name}
------------------
-${this.description}
-    `;
-  }
+  
 }
 
 module.exports = exports = Location;
