@@ -1,7 +1,7 @@
 
 const WebSocket = require('ws');
 
-const GameEngine = require('./GameEngine');
+const GameEngine = require('./GameEngine').default;
 const Player = require('./Player');
 const Location = require('./Location');
 
@@ -144,3 +144,5 @@ wss.on('connection', function connection(ws) {
   });
 
 });
+
+console.log("Launched");

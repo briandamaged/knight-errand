@@ -2,6 +2,7 @@ module.exports = {
   apps : [{
     name: 'backend',
     interpreter: './node_modules/.bin/babel-node',
+    interpreter_args: ['--extensions=.js,.ts'],
     script: './src/index.js',
 
 
