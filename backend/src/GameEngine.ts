@@ -1,6 +1,6 @@
 
 import {
-  Location, Character, Entity, Describeable,
+  Location, Character, Entity,
 } from './models';
 
 import EventEmitter from 'events';
@@ -17,7 +17,7 @@ export default class GameEngine extends EventEmitter {
 
 
   async getDescription({viewer, target}: getDescriptionSpec): Promise<string | undefined> {
-    return target.description;
+    return target.getDescription();
   }
 
 }

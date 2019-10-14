@@ -7,23 +7,14 @@ export interface Player {
 }
 
 
-export interface IDescribeable {
-  type: "describeable",
-  getDescription(): Promise<string>,
-}
 
+export interface World {
 
-export interface HasDescription {
-  description: string,
-}
-
-export interface Describeable {
-  getDescription({viewer}: {viewer: Character}): Promise<string>,
 }
 
 
 export interface Entity {
-  description?: string,
+  getDescription(): Promise<string>,
 }
 
 
@@ -48,7 +39,7 @@ export interface Item extends Prop {
 
 export interface Location extends Entity {
   getOccupants?(): Promise<Character[]>,
-  getPortals?(): Promise<Portal[]>,
+  getPortals(): Promise<Portal[]>,
   getProps?(): Promise<Prop[]>,
 }
 
