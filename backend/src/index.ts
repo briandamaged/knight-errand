@@ -1,6 +1,21 @@
 
 import WebSocket from 'ws';
 
+import GameEngine from './GameEngine';
+
+import {
+  createWorld,
+} from './world';
+
+
+
+const engine = new GameEngine();
+
+
+createWorld({
+  engine: engine,
+});
+
 const wss = new WebSocket.Server({
   port: 3000,
 });
@@ -8,7 +23,7 @@ const wss = new WebSocket.Server({
 wss.on('connection', function connection(ws) {
 
   ws.on('message', function incoming(instruction) {
-    ws.send("OK!");
+    ws.send(engine.locationMap["townSquare"].getDescription());
   });
 
 });
