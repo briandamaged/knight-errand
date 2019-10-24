@@ -3,7 +3,7 @@ module.exports = {
     name: 'backend',
     interpreter: './node_modules/.bin/babel-node',
     interpreter_args: ['--extensions=.js,.ts'],
-    script: './src/index.js',
+    script: './src',
 
 
     instances: 1,
