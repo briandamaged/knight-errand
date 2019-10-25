@@ -87,7 +87,7 @@ wss.on('connection', function connection(ws) {
     if(newCommand) {
       return handleCommand(newCommand);
     } else {
-      ws.send("Could not parse instruction");
+      player.inform("Could not parse instruction");
     }
   }));
 
@@ -99,7 +99,7 @@ wss.on('connection', function connection(ws) {
     engine.go({sender: player, direction: cmd.direction});
   }));
 
-  handleCommand.otherwise(()=> ws.send("Unrecognized command"));
+  handleCommand.otherwise(()=> player.inform("Unrecognized command"));
 
   ws.on('message', function incoming(serializedCommand) {
     // TODO: Error handling
