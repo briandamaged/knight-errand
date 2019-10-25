@@ -7,9 +7,11 @@ import { Command } from "./models";
 
 export function createParser() {
   function parseInstruction(instruction: string): Command | undefined {
-    const ctx = {
+    const normalized = instruction.toLowerCase();
+    const ctx: ParsingContext = {
       raw: instruction,
-      words: instruction.split(/\s+/),
+      normalized: normalized,
+      words: normalized.split(/\s+/),
     };
   
     return _parseInstruction(ctx);
@@ -17,6 +19,7 @@ export function createParser() {
   
   interface ParsingContext {
     raw: string,
+    normalized: string,
     words: string[],
   }
   
