@@ -25,13 +25,16 @@ export function createParser() {
   
   const _parseInstruction = Dispatcher<[ParsingContext], Command | undefined>();
   
-  _parseInstruction.use(IF(
-    (ctx)=> ctx.words[0] === "look",
-    (ctx)=> ({
-      name: "look",
-    }),
-  ));
-  
+  for(const alias of ["look", "l"]) {
+    _parseInstruction.use(IF(
+      (ctx)=> ctx.words[0] === alias,
+      (ctx)=> ({
+        name: "look",
+      }),
+    ));
+  }
+
+
   _parseInstruction.use(IF(
     (ctx)=> ctx.words[0] === "go",
     (ctx)=> ({
@@ -61,10 +64,17 @@ export function createParser() {
         })
       ));
     }
-
   }
 
 
+  for(const alias of ["help", "?"]) {
+    _parseInstruction.use(IF(
+      (ctx)=> ctx.words[0] === alias,
+      (ctx)=> ({
+        name: "help",
+      }),
+    ));
+  }
   
   _parseInstruction.otherwise(RETURN(undefined));
 

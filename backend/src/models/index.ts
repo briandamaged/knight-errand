@@ -23,7 +23,11 @@ export interface GoCommand extends Command {
 }
 
 export interface LookCommand extends Command {
+  name: "look",
+}
 
+export interface HelpCommand extends Command {
+  name: "help",
 }
 
 

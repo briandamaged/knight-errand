@@ -15,7 +15,7 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand,
+  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand,
 } from './models';
 
 
@@ -79,6 +79,13 @@ handleCommand.use(CommandRule("go", function(ctx: CommandContext<GoCommand>) {
     sender: ctx.sender,
     direction: ctx.command.direction,
   });
+}));
+
+handleCommand.use(CommandRule("help", function(ctx: CommandContext<HelpCommand>) {
+  ctx.sender.inform(`Here are some things you can try:
+  - look
+  - go north
+  `);
 }));
 
 handleCommand.otherwise(function(ctx: CommandContext<Command>) {
