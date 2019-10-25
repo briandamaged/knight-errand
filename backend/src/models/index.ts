@@ -8,8 +8,15 @@ export interface RawCommand extends Command {
   content: string,
 }
 
+export type Direction = string;
+
+export interface GoCommand extends Command {
+  name: "go",
+  direction: Direction,
+}
+
 export interface Character {
-  currentLocation: LocationID,
+  currentLocationID: LocationID,
 }
 
 
@@ -18,4 +25,8 @@ type LocationID = string;
 export interface Location {
   id: LocationID,
   getDescription(): string,
+
+  exits: {
+    [key: string]: LocationID | undefined,
+  },
 }
