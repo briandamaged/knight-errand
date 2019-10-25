@@ -67,6 +67,24 @@ export function createParser() {
   }
 
 
+  _parseInstruction.use(IF(
+    (ctx)=> ctx.words[0] === "autolook",
+    (ctx)=> {
+      if(["on", "true", "1"].includes(ctx.words[1])) {
+        return {
+          name: "autolook",
+          enabled: true,
+        };
+      } else if(["off", "false", "0"].includes(ctx.words[1])) {
+        return {
+          name: "autolook",
+          enabled: false,
+        };
+      }
+    }
+  ))
+
+
   for(const alias of ["help", "?"]) {
     _parseInstruction.use(IF(
       (ctx)=> ctx.words[0] === alias,

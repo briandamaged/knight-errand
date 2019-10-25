@@ -15,7 +15,7 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand,
+  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand,
 } from './models';
 
 
@@ -88,6 +88,17 @@ handleCommand.use(CommandRule("help", function(ctx: CommandContext<HelpCommand>)
   `);
 }));
 
+handleCommand.use(CommandRule("autolook", function(ctx: CommandContext<AutoLookCommand>) {
+  ctx.sender.autolook = ctx.command.enabled;
+  const state = (
+    (ctx.command.enabled)
+      ? "enabled"
+      : "disabled"
+  );
+
+  ctx.sender.inform(`autolook ${state}`);
+}));
+
 handleCommand.otherwise(function(ctx: CommandContext<Command>) {
   ctx.sender.inform("Unrecognized command");
 });
@@ -102,6 +113,17 @@ wss.on('connection', function connection(ws) {
 
   player.on('informed', function(message) {
     ws.send(message);
+  });
+
+  player.on('entered', function(this: Character, location) {
+    if(this.autolook) {
+      handleCommand({
+        sender: player,
+        command: {
+          name: "look",
+        }
+      });
+    }
   });
 
   ws.on('message', function incoming(serializedCommand) {

@@ -30,18 +30,29 @@ export interface HelpCommand extends Command {
   name: "help",
 }
 
+export interface AutoLookCommand extends Command {
+  name: "autolook",
+  enabled: boolean,
+}
+
 
 export class Character extends EventEmitter {
   currentLocationID: string;
+  autolook: boolean;
 
   constructor({currentLocationID}: {currentLocationID: LocationID}) {
     super();
 
     this.currentLocationID = currentLocationID;
+    this.autolook = true;
   }
 
   inform(message: string) {
     this.emit('informed', message);
+  }
+
+  entered(location: Location) {
+    this.emit('entered', location);
   }
 }
 

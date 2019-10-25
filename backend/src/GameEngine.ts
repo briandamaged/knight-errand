@@ -46,7 +46,7 @@ ${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
         const destination = this.getLocation(destinationID);
         if(destination) {
           sender.currentLocationID = destination.id;
-          sender.inform("You walk valiantly!");
+          sender.entered(destination);
         } else {
           sender.inform(`Could not load Location with id = ${JSON.stringify(destinationID)}`);
         }
