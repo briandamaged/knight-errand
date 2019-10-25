@@ -1,6 +1,11 @@
 
 import { EventEmitter } from "events";
 
+export interface CommandContext<CMD extends Command = Command> {
+  sender: Character,
+  command: CMD,
+}
+
 export interface Command {
   name: string,
 }
@@ -15,6 +20,10 @@ export type Direction = string;
 export interface GoCommand extends Command {
   name: "go",
   direction: Direction,
+}
+
+export interface LookCommand extends Command {
+
 }
 
 
