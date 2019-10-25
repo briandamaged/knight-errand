@@ -46,10 +46,35 @@ export function createWorld({engine}: {engine: GameEngine}): void {
 
   engine.addLocation(church);
 
+
+  const generalStore: Location = {
+    id: "generalStore",
+    getDescription() {
+      return "You are in a general store.  Believe it or not, you cannot purchase generals here.  Only things.";
+    },
+    exits: {},
+  };
+
+  const blacksmith: Location = {
+    id: "blacksmith",
+    getDescription() {
+      return "This is a blacksmith.  You can buy swords and stuff here, or something.";
+    },
+    exits: {},
+  }
+
+  engine.addLocation(blacksmith);
+
   townSquare.exits.north = tavern.id;
   tavern.exits.south = townSquare.id;
 
   townSquare.exits.east = church.id;
   church.exits.west = townSquare.id;
+
+  townSquare.exits.south = generalStore.id;
+  generalStore.exits.north = townSquare.id;
+
+  townSquare.exits.west = blacksmith.id;
+  blacksmith.exits.east = townSquare.id;
 }
 
