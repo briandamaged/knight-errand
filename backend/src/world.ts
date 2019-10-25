@@ -35,7 +35,21 @@ export function createWorld({engine}: {engine: GameEngine}): void {
 
   engine.addLocation(tavern);
 
+
+  const church: Location = {
+    id: "church",
+    getDescription() {
+      return "You are inside a church.  Everybody looks really prayerful.";
+    },
+    exits: {},
+  };
+
+  engine.addLocation(church);
+
   townSquare.exits.north = tavern.id;
   tavern.exits.south = townSquare.id;
+
+  townSquare.exits.east = church.id;
+  church.exits.west = townSquare.id;
 }
 

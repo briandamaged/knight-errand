@@ -27,7 +27,12 @@ export default class GameEngine extends EventEmitter {
   look({sender}: {sender: Character}) {
     const location = this.getLocation(sender.currentLocationID);
     if(location) {
-      sender.inform(location.getDescription());
+      sender.inform(`
+${location.getDescription()}
+
+Available Exits:
+${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
+      `);
     }
   }
 
