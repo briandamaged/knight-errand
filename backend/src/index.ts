@@ -8,6 +8,8 @@ import {
 
 import GameEngine from './GameEngine';
 
+import {createParser} from './Parser';
+
 import {
   createWorld,
 } from './world';
@@ -29,49 +31,7 @@ const wss = new WebSocket.Server({
 });
 
 
-function parseInstruction(instruction: string): Command | undefined {
-  const ctx = {
-    raw: instruction,
-    words: instruction.split(/\s+/),
-  };
-
-  return _parseInstruction(ctx);
-}
-
-interface ParsingContext {
-  raw: string,
-  words: string[],
-}
-
-const _parseInstruction = Dispatcher<[ParsingContext], Command | undefined>();
-
-_parseInstruction.use(IF(
-  (ctx)=> ctx.words[0] === "look",
-  (ctx)=> ({
-    name: "look",
-  }),
-));
-
-_parseInstruction.use(IF(
-  (ctx)=> ctx.words[0] === "go",
-  (ctx)=> ({
-    name: "go",
-    direction: ctx.words[1],
-  }),
-));
-
-for(const d of ["north", "south", "east", "west"]) {
-  _parseInstruction.use(IF(
-    (ctx)=> ctx.words[0] === d,
-    (ctx)=> ({
-      name: "go",
-      direction: d,
-    })
-  ));
-}
-
-_parseInstruction.otherwise(RETURN(undefined));
-
+const parseInstruction = createParser();
 
 
 interface CommandHandler<CMD extends Command> {
