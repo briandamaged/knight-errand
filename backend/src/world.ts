@@ -55,6 +55,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     exits: {},
   };
 
+  engine.addLocation(generalStore);
+
   const blacksmith: Location = {
     id: "blacksmith",
     getDescription() {

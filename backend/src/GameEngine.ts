@@ -58,4 +58,13 @@ ${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
     }
   }
 
+
+  teleport({sender, locationID}: {sender: Character, locationID: LocationID}) {
+    const location = this.getLocation(locationID);
+    if(location) {
+      sender.currentLocationID = location.id;
+      sender.entered(location);
+    }
+  }
+
 }

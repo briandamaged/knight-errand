@@ -107,8 +107,9 @@ handleCommand.otherwise(function(ctx: CommandContext<Command>) {
 
 wss.on('connection', function connection(ws) {
 
+  // FIXME: Ability to instantiate a Character without a currentLocationID
   const player = new Character({
-    currentLocationID: "townSquare",
+    currentLocationID: "",
   });
 
   player.on('informed', function(message) {
@@ -124,6 +125,11 @@ wss.on('connection', function connection(ws) {
         }
       });
     }
+  });
+
+  engine.teleport({
+    sender: player,
+    locationID: "townSquare",
   });
 
   ws.on('message', function incoming(serializedCommand) {
