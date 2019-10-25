@@ -1,4 +1,6 @@
 
+import { EventEmitter } from "events";
+
 export interface Command {
   name: string,
 }
@@ -15,12 +17,23 @@ export interface GoCommand extends Command {
   direction: Direction,
 }
 
-export interface Character {
-  currentLocationID: LocationID,
+
+export class Character extends EventEmitter {
+  currentLocationID: string;
+
+  constructor({currentLocationID}: {currentLocationID: LocationID}) {
+    super();
+
+    this.currentLocationID = currentLocationID;
+  }
+
+  inform(message: string) {
+    this.emit('informed', message);
+  }
 }
 
 
-type LocationID = string;
+export type LocationID = string;
 
 export interface Location {
   id: LocationID,

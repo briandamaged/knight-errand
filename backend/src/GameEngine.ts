@@ -1,6 +1,6 @@
 
 import {
-  Location,
+  Location, Character, LocationID,
 } from './models';
 
 import EventEmitter from 'events';
@@ -16,5 +16,18 @@ export default class GameEngine extends EventEmitter {
 
   addLocation(location: Location) {
     this.locationMap[location.id] = location;
+  }
+
+  getLocation(id: LocationID | undefined) {
+    if(id) {
+      return this.locationMap[id];
+    }
+  }
+
+  look({sender}: {sender: Character}) {
+    const location = this.getLocation(sender.currentLocationID);
+    if(location) {
+      sender.inform(location.getDescription());
+    }
   }
 }

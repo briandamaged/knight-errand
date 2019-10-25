@@ -13,7 +13,7 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, GoCommand,
+  Command, RawCommand, GoCommand, Character,
 } from './models';
 
 
@@ -72,9 +72,13 @@ function CommandRule<T extends Command>(name: string, handler: Handler<[T], void
 
 wss.on('connection', function connection(ws) {
 
-  const player = {
-    currentLocationID: engine.locationMap["townSquare"].id,
-  };
+  const player = new Character({
+    currentLocationID: "townSquare",
+  });
+
+  player.on('informed', function(message) {
+    ws.send(message);
+  });
 
   const handleCommand = Dispatcher<[Command], void>();
 
@@ -88,7 +92,7 @@ wss.on('connection', function connection(ws) {
   }));
 
   handleCommand.use(CommandRule("look", function() {
-    ws.send(engine.locationMap[player.currentLocationID].getDescription())
+    engine.look({sender: player});
   }));
 
   handleCommand.use(CommandRule("go", function(cmd: GoCommand) {
