@@ -14,6 +14,17 @@ const Feedback = styled.pre `
 `;
 
 
+const Navigation = styled.div `
+  display: grid;
+
+  grid-template-columns: 30% 40% 30%;
+  grid-template-rows: 30% 40% 30%;
+`;
+
+const NavigationButton = styled.button `
+`
+
+
 class Commands extends React.Component<{}, State> {
   ws: WebSocket;
 
@@ -22,6 +33,8 @@ class Commands extends React.Component<{}, State> {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleLook = this.handleLook.bind(this);
+    this.go = this.go.bind(this);
 
     // FIXME:
     this.ws = new WebSocket("ws://localhost:5000/");
@@ -46,12 +59,36 @@ class Commands extends React.Component<{}, State> {
   }
 
   handleSubmit(event: FormEvent<HTMLFormElement>) {
-    this.ws.send(this.state.value);
+    const serializedCommand = JSON.stringify({
+      "name": "raw",
+      "content": this.state.value,
+    });
+
+    this.ws.send(serializedCommand);
     event.preventDefault();
 
     this.setState({
       value: '',
     });
+  }
+
+  handleLook(event: React.MouseEvent) {
+    event.preventDefault();
+    const serializedCommand = JSON.stringify({
+      name: "look",
+    });
+    this.ws.send(serializedCommand);
+  }
+
+  go(direction: string) {
+    return (event: React.MouseEvent)=> {
+      event.preventDefault();
+      const serializedCommand = JSON.stringify({
+        name: "go",
+        direction: direction,
+      });
+      this.ws.send(serializedCommand);
+    }
   }
 
   isValidCommand() {
@@ -75,6 +112,17 @@ class Commands extends React.Component<{}, State> {
           />
         </form>
 
+        <Navigation>
+          <NavigationButton onClick={this.go("northwest") } >NW</NavigationButton>
+          <NavigationButton onClick={this.go("north") } >North</NavigationButton>
+          <NavigationButton onClick={this.go("northeast") } >NE</NavigationButton>
+          <NavigationButton onClick={this.go("west") } >West</NavigationButton>
+          <NavigationButton onClick={this.handleLook } >LOOK</NavigationButton>
+          <NavigationButton onClick={this.go("east") } >East</NavigationButton>
+          <NavigationButton onClick={this.go("southwest") } >SW</NavigationButton>
+          <NavigationButton onClick={this.go("south") } >South</NavigationButton>
+          <NavigationButton onClick={this.go("southeast") } >SE</NavigationButton>
+        </Navigation>
       </div>
     );
   }

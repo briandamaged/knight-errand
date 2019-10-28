@@ -1,50 +1,69 @@
 
+import { EventEmitter } from "events";
 
-export interface Player {
-  username: string,
+export interface CommandContext<CMD extends Command = Command> {
+  sender: Character,
+  command: CMD,
+}
 
-  characters: Character[],
+export interface Command {
+  name: string,
+}
+
+export interface RawCommand extends Command {
+  name: "raw",
+  content: string,
+}
+
+export type Direction = string;
+
+export interface GoCommand extends Command {
+  name: "go",
+  direction: Direction,
+}
+
+export interface LookCommand extends Command {
+  name: "look",
+}
+
+export interface HelpCommand extends Command {
+  name: "help",
+}
+
+export interface AutoLookCommand extends Command {
+  name: "autolook",
+  enabled: boolean,
 }
 
 
+export class Character extends EventEmitter {
+  currentLocationID: string;
+  autolook: boolean;
 
-export interface World {
+  constructor({currentLocationID}: {currentLocationID: LocationID}) {
+    super();
 
+    this.currentLocationID = currentLocationID;
+    this.autolook = true;
+  }
+
+  inform(message: string) {
+    this.emit('informed', message);
+  }
+
+  entered(location: Location) {
+    this.emit('entered', location);
+  }
 }
 
 
-export interface Entity {
-  getDescription(): Promise<string>,
+export type LocationID = string;
+
+export interface Location {
+  id: LocationID,
+  getDescription(): string,
+
+  exits: {
+    [key: string]: LocationID | undefined,
+  },
 }
-
-
-export interface Character extends Entity {
-  getLocation(): Promise<Location>,
-  getItems(): Promise<Prop[]>,
-}
-
-
-
-export interface Prop extends Entity {
-
-}
-
-
-// Not sure if Item is really a subclass of Prop.  It's
-// more like a Prop that is also carryable.
-export interface Item extends Prop {
-
-}
-
-
-export interface Location extends Entity {
-  getOccupants?(): Promise<Character[]>,
-  getPortals(): Promise<Portal[]>,
-  getProps?(): Promise<Prop[]>,
-}
-
-
-export interface Portal extends Entity {
-  getDestination(): Promise<Location>,
-}
-

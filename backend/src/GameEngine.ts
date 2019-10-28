@@ -1,23 +1,70 @@
 
 import {
-  Location, Character, Entity,
+  Location, Character, LocationID, Direction,
 } from './models';
 
 import EventEmitter from 'events';
 
-interface getDescriptionSpec {
-  viewer: Character,
-  target: Entity,
-}
-
 export default class GameEngine extends EventEmitter {
+  locationMap: Record<string, Location>;
+
   constructor({} = {}) {
     super();
+
+    this.locationMap = Object.create(null);
+  }
+
+  addLocation(location: Location) {
+    this.locationMap[location.id] = location;
+  }
+
+  getLocation(id: LocationID | undefined) {
+    if(id) {
+      return this.locationMap[id];
+    }
+  }
+
+  look({sender}: {sender: Character}) {
+    const location = this.getLocation(sender.currentLocationID);
+    if(location) {
+      sender.inform(`
+${location.getDescription()}
+
+Available Exits:
+${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
+      `);
+    }
   }
 
 
-  async getDescription({viewer, target}: getDescriptionSpec): Promise<string | undefined> {
-    return target.getDescription();
+  go({sender, direction}: {sender: Character, direction: Direction}) {
+    const location = this.getLocation(sender.currentLocationID);
+
+    if(location) {
+      const destinationID = location.exits[direction];
+      if(destinationID) {
+        const destination = this.getLocation(destinationID);
+        if(destination) {
+          sender.currentLocationID = destination.id;
+          sender.entered(destination);
+        } else {
+          sender.inform(`Could not load Location with id = ${JSON.stringify(destinationID)}`);
+        }
+      } else {
+        sender.inform("There does not appear to be an exit in that direction");
+      }
+    } else {
+      sender.inform("Somehow, you appear to be floating in the void.  How fun!");
+    }
+  }
+
+
+  teleport({sender, locationID}: {sender: Character, locationID: LocationID}) {
+    const location = this.getLocation(locationID);
+    if(location) {
+      sender.currentLocationID = location.id;
+      sender.entered(location);
+    }
   }
 
 }
