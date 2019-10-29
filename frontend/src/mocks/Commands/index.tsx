@@ -6,16 +6,13 @@ import {
   Box, Grid,
 } from 'grommet';
 
+
+import History from './History';
+
 interface State {
   value: string;
   log: string[];
 }
-
-
-const Feedback = styled.pre `
-  border: 1px solid black;
-  padding: 0.5em;
-`;
 
 
 const Navigation = styled.div `
@@ -115,9 +112,7 @@ class Commands extends React.Component<{}, State> {
       >
 
         <Box gridArea="log" >
-          <div style={{overflow: "auto"}}>
-            { this.state.log.map((msg, i)=> <Feedback key={i} >{msg}</Feedback>) }
-          </div>
+          <History messages={this.state.log} />
         </Box>
 
         <Box gridArea="parser" >
