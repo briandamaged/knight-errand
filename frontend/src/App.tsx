@@ -22,7 +22,7 @@ const Viewport = styled.div `
 `;
 
 const App: React.FC = ()=> (
-  <Grommet plain>
+  <Grommet plain full>
     <Commands />
   </Grommet>
 );

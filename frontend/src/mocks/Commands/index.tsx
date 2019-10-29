@@ -28,6 +28,9 @@ const Navigation = styled.div `
 const NavigationButton = styled.button `
 `
 
+const MainGrid = styled(Grid) `
+  height: 100%;
+`;
 
 class Commands extends React.Component<{}, State> {
   ws: WebSocket;
@@ -101,17 +104,23 @@ class Commands extends React.Component<{}, State> {
 
   render() {
     return (
-      <Grid
-        rows={["1/2", "1/2"]}
+      <MainGrid
+        rows={["80%", "20%"]}
         columns={["1/2", "1/2"]}
         areas={[
-          { name: 'left', start: [0, 0], end: [0, 1] },
-          { name: 'right', start: [1, 0], end: [1, 1] },
+          { name: 'log', start: [0, 0], end: [0, 0] },
+          { name: 'parser', start: [0, 1], end: [0, 1] },
+          { name: 'navigation', start: [1, 0], end: [1, 0] },
         ]}
       >
 
-        <Box gridArea="left" >
-          { this.state.log.map((msg, i)=> <Feedback key={i} >{msg}</Feedback>) }
+        <Box gridArea="log" >
+          <div style={{overflow: "auto"}}>
+            { this.state.log.map((msg, i)=> <Feedback key={i} >{msg}</Feedback>) }
+          </div>
+        </Box>
+
+        <Box gridArea="parser" >
           <form onSubmit={this.handleSubmit}>
             <input type="text" onChange={this.handleChange} value={this.state.value} ></input>
             <input
@@ -124,8 +133,7 @@ class Commands extends React.Component<{}, State> {
 
 
 
-
-        <Box gridArea="right" >
+        <Box gridArea="navigation" >
           <Navigation>
             <NavigationButton onClick={this.go("northwest") } >NW</NavigationButton>
             <NavigationButton onClick={this.go("north") } >North</NavigationButton>
@@ -138,7 +146,7 @@ class Commands extends React.Component<{}, State> {
             <NavigationButton onClick={this.go("southeast") } >SE</NavigationButton>
           </Navigation>
         </Box>
-      </Grid>
+      </MainGrid>
     );
   }
 }
