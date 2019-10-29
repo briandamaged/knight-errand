@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
+import {
+  Grommet,
+} from 'grommet';
 
 
 import Commands from './mocks/Commands';
@@ -19,22 +22,9 @@ const Viewport = styled.div `
 `;
 
 const App: React.FC = ()=> (
-  <Router>
-    <Navbar>
-      <ul>
-        <li><Link to="/">Commands</Link></li>
-        <li><Link to="/battle">Battle</Link></li>
-        <li><Link to="/shoppe" >Shoppe</Link></li>
-      </ul>
-
-    </Navbar>
-    <Viewport>
-      <Route path="/" exact component={Commands} />
-      <Route path="/battle" exact component={Battle} />
-      <Route path="/shoppe" exact component={Shoppe} />
-    </Viewport>
-
-  </Router>
+  <Grommet plain>
+    <Commands />
+  </Grommet>
 );
 
 export default App;

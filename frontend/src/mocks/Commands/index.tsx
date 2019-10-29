@@ -2,6 +2,10 @@
 import React, {FormEvent} from 'react';
 import styled from 'styled-components';
 
+import {
+  Box, Grid,
+} from 'grommet';
+
 interface State {
   value: string;
   log: string[];
@@ -97,33 +101,44 @@ class Commands extends React.Component<{}, State> {
 
   render() {
     return (
-      <div>
+      <Grid
+        rows={["1/2", "1/2"]}
+        columns={["1/2", "1/2"]}
+        areas={[
+          { name: 'left', start: [0, 0], end: [0, 1] },
+          { name: 'right', start: [1, 0], end: [1, 1] },
+        ]}
+      >
 
-        <div>
+        <Box gridArea="left" >
           { this.state.log.map((msg, i)=> <Feedback key={i} >{msg}</Feedback>) }
-        </div>
+          <form onSubmit={this.handleSubmit}>
+            <input type="text" onChange={this.handleChange} value={this.state.value} ></input>
+            <input
+              type="submit"
+              value="Send"
+              disabled={!this.isValidCommand()}
+            />
+          </form>
+        </Box>
 
-        <form onSubmit={this.handleSubmit}>
-          <input type="text" onChange={this.handleChange} value={this.state.value} ></input>
-          <input
-            type="submit"
-            value="Send"
-            disabled={!this.isValidCommand()}
-          />
-        </form>
 
-        <Navigation>
-          <NavigationButton onClick={this.go("northwest") } >NW</NavigationButton>
-          <NavigationButton onClick={this.go("north") } >North</NavigationButton>
-          <NavigationButton onClick={this.go("northeast") } >NE</NavigationButton>
-          <NavigationButton onClick={this.go("west") } >West</NavigationButton>
-          <NavigationButton onClick={this.handleLook } >LOOK</NavigationButton>
-          <NavigationButton onClick={this.go("east") } >East</NavigationButton>
-          <NavigationButton onClick={this.go("southwest") } >SW</NavigationButton>
-          <NavigationButton onClick={this.go("south") } >South</NavigationButton>
-          <NavigationButton onClick={this.go("southeast") } >SE</NavigationButton>
-        </Navigation>
-      </div>
+
+
+        <Box gridArea="right" >
+          <Navigation>
+            <NavigationButton onClick={this.go("northwest") } >NW</NavigationButton>
+            <NavigationButton onClick={this.go("north") } >North</NavigationButton>
+            <NavigationButton onClick={this.go("northeast") } >NE</NavigationButton>
+            <NavigationButton onClick={this.go("west") } >West</NavigationButton>
+            <NavigationButton onClick={this.handleLook } >LOOK</NavigationButton>
+            <NavigationButton onClick={this.go("east") } >East</NavigationButton>
+            <NavigationButton onClick={this.go("southwest") } >SW</NavigationButton>
+            <NavigationButton onClick={this.go("south") } >South</NavigationButton>
+            <NavigationButton onClick={this.go("southeast") } >SE</NavigationButton>
+          </Navigation>
+        </Box>
+      </Grid>
     );
   }
 }
