@@ -31,6 +31,7 @@ const MainGrid = styled(Grid) `
 
 class Commands extends React.Component<{}, State> {
   ws: WebSocket;
+  historyBottom?: HTMLDivElement;
 
   constructor(props: {}) {
     super(props);
@@ -51,6 +52,11 @@ class Commands extends React.Component<{}, State> {
 
       this.setState({
         log: this.state.log.concat(response),
+      }, ()=> {
+        if(this.historyBottom) {
+          this.historyBottom.scrollIntoView();
+          console.log("wat?");
+        }
       });
     }
 
@@ -123,7 +129,10 @@ class Commands extends React.Component<{}, State> {
       >
 
         <Box gridArea="log" >
-          <History messages={ this.state.log } />
+          <History
+            messages={ this.state.log }
+            ref={ (e: HTMLDivElement)=> this.historyBottom = e }
+          />
         </Box>
 
         <Box gridArea="parser" >

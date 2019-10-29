@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, {createRef} from 'react';
 import styled from 'styled-components';
 
 type MessageType = "request" | "response";
@@ -41,15 +41,17 @@ const ItemFor = (
 );
 
 
-export const History: React.FC<{messages: Message[] }> = ({messages})=> (
+export const History = React.forwardRef<HTMLDivElement, {messages: Message[]}>(({messages}, ref)=> (
   <HistoryContainer style={{overflow: "auto"}}>
     {
-        messages.map(({type, content}, i)=> {
-          const ItemComponent = ItemFor(type);
-          return <ItemComponent key={i} >{content}</ItemComponent>
-        })
+      messages.map(({type, content}, i)=> {
+        const ItemComponent = ItemFor(type);
+        return <ItemComponent key={i} >{content}</ItemComponent>
+      })
     }
+    <div ref={ ref } />
   </HistoryContainer>
-);
+));
+
 
 export default History;
