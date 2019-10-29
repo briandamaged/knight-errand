@@ -7,11 +7,11 @@ import {
 } from 'grommet';
 
 
-import History from './History';
+import {History, Message} from './History';
 
 interface State {
   value: string;
-  log: string[];
+  log: Message[];
 }
 
 
@@ -44,8 +44,13 @@ class Commands extends React.Component<{}, State> {
     this.ws = new WebSocket("ws://localhost:5000/");
 
     this.ws.onmessage = (event)=> {
+      const response: Message = {
+        type: "response",
+        content: event.data,
+      };
+
       this.setState({
-        log: this.state.log.concat(event.data),
+        log: this.state.log.concat(response),
       });
     }
 
@@ -71,8 +76,14 @@ class Commands extends React.Component<{}, State> {
     this.ws.send(serializedCommand);
     event.preventDefault();
 
+    const request: Message = {
+      type: "request",
+      content: this.state.value,
+    };
+
     this.setState({
       value: '',
+      log: this.state.log.concat(request),
     });
   }
 
@@ -112,7 +123,7 @@ class Commands extends React.Component<{}, State> {
       >
 
         <Box gridArea="log" >
-          <History messages={this.state.log} />
+          <History messages={ this.state.log } />
         </Box>
 
         <Box gridArea="parser" >
