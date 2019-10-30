@@ -26,10 +26,6 @@ class Commands extends React.Component<{}, State> {
   constructor(props: {}) {
     super(props);
 
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleCommand = this.handleCommand.bind(this);
-
     // FIXME:
     this.ws = new WebSocket("ws://localhost:5000/");
 
@@ -50,14 +46,13 @@ class Commands extends React.Component<{}, State> {
     };
   }
 
-
-  handleChange(event: FormEvent<HTMLInputElement>) {
+  handleChange = (event: FormEvent<HTMLInputElement>)=> {
     this.setState({
       value: event.currentTarget.value,
     });
   }
 
-  handleSubmit(event: FormEvent<HTMLFormElement>) {
+  handleSubmit = (event: FormEvent<HTMLFormElement>)=> {
     const serializedCommand = JSON.stringify({
       "name": "raw",
       "content": this.state.value,
@@ -77,7 +72,7 @@ class Commands extends React.Component<{}, State> {
     });
   }
 
-  handleCommand(cmd: any) {
+  handleCommand = (cmd: any)=> {
     const serializedCommand = JSON.stringify(cmd);
     this.ws.send(serializedCommand)
   }
