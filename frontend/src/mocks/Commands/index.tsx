@@ -8,22 +8,13 @@ import {
 
 
 import {History, Message} from './History';
+import Navigation from './Navigation';
 
 interface State {
   value: string;
   log: Message[];
 }
 
-
-const Navigation = styled.div `
-  display: grid;
-
-  grid-template-columns: 30% 40% 30%;
-  grid-template-rows: 30% 40% 30%;
-`;
-
-const NavigationButton = styled.button `
-`
 
 const MainGrid = styled(Grid) `
   height: 100%;
@@ -38,7 +29,7 @@ class Commands extends React.Component<{}, State> {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleLook = this.handleLook.bind(this);
-    this.go = this.go.bind(this);
+    this.handleCommand = this.handleCommand.bind(this);
 
     // FIXME:
     this.ws = new WebSocket("ws://localhost:5000/");
@@ -95,15 +86,9 @@ class Commands extends React.Component<{}, State> {
     this.ws.send(serializedCommand);
   }
 
-  go(direction: string) {
-    return (event: React.MouseEvent)=> {
-      event.preventDefault();
-      const serializedCommand = JSON.stringify({
-        name: "go",
-        direction: direction,
-      });
-      this.ws.send(serializedCommand);
-    }
+  handleCommand(cmd: any) {
+    const serializedCommand = JSON.stringify(cmd);
+    this.ws.send(serializedCommand)
   }
 
   isValidCommand() {
@@ -140,17 +125,7 @@ class Commands extends React.Component<{}, State> {
 
 
         <Box gridArea="navigation" >
-          <Navigation>
-            <NavigationButton onClick={this.go("northwest") } >NW</NavigationButton>
-            <NavigationButton onClick={this.go("north") } >North</NavigationButton>
-            <NavigationButton onClick={this.go("northeast") } >NE</NavigationButton>
-            <NavigationButton onClick={this.go("west") } >West</NavigationButton>
-            <NavigationButton onClick={this.handleLook } >LOOK</NavigationButton>
-            <NavigationButton onClick={this.go("east") } >East</NavigationButton>
-            <NavigationButton onClick={this.go("southwest") } >SW</NavigationButton>
-            <NavigationButton onClick={this.go("south") } >South</NavigationButton>
-            <NavigationButton onClick={this.go("southeast") } >SE</NavigationButton>
-          </Navigation>
+          <Navigation onCommand={ this.handleCommand } />
         </Box>
       </MainGrid>
     );
