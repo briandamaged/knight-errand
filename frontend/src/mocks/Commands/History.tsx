@@ -29,6 +29,7 @@ const Response = styled.pre `
 
 
 const HistoryContainer = styled.div `
+  height: 100%;
   border: 1px solid black;
   padding: 0.5em;
 `
