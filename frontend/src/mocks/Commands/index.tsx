@@ -26,6 +26,27 @@ const HistoryPanel = styled(Box) `
   margin: 1em;
 `
 
+const ParserContainer = styled.div `
+  display: grid;
+  grid-template-columns: 2em auto 5em;
+  grid-template-rows: 100%;
+
+  background-color: #222222;
+  color: lime;
+
+  font-size: 18px;
+  font-family: Courier New;
+`
+
+const ParserText = styled.input `
+  border: none;
+  background-color: #222222;
+  color: lime;
+
+  font-size: 18px;
+  font-family: Courier New;
+`
+
 class Commands extends React.Component<{}, State> {
   ws: WebSocket;
 
@@ -94,26 +115,25 @@ class Commands extends React.Component<{}, State> {
         columns={["1/2", "1/2"]}
         areas={[
           { name: 'log', start: [0, 0], end: [0, 0] },
-          { name: 'parser', start: [0, 1], end: [0, 1] },
           { name: 'navigation', start: [1, 0], end: [1, 0] },
         ]}
       >
 
         <HistoryPanel gridArea="log" >
           <History messages={ this.state.log } />
-        </HistoryPanel>
 
-        <Box gridArea="parser" >
           <form onSubmit={this.handleSubmit}>
-            <input type="text" onChange={this.handleChange} value={this.state.value} ></input>
-            <input
-              type="submit"
-              value="Send"
-              disabled={!this.isValidCommand()}
-            />
+            <ParserContainer>
+              <p>&nbsp;&gt;</p>
+              <ParserText type="text" onChange={this.handleChange} value={this.state.value} />
+              <input
+                type="submit"
+                value="Send"
+                disabled={!this.isValidCommand()}
+              />
+            </ParserContainer>
           </form>
-        </Box>
-
+        </HistoryPanel>
 
 
         <Box gridArea="navigation" >
