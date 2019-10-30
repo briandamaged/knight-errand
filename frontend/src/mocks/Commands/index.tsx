@@ -20,6 +20,12 @@ const MainGrid = styled(Grid) `
   height: 100%;
 `;
 
+const HistoryPanel = styled(Box) `
+  border: 1px solid lime;
+  background-color: black;
+  margin: 1em;
+`
+
 class Commands extends React.Component<{}, State> {
   ws: WebSocket;
 
@@ -93,9 +99,9 @@ class Commands extends React.Component<{}, State> {
         ]}
       >
 
-        <Box gridArea="log" >
+        <HistoryPanel gridArea="log" >
           <History messages={ this.state.log } />
-        </Box>
+        </HistoryPanel>
 
         <Box gridArea="parser" >
           <form onSubmit={this.handleSubmit}>

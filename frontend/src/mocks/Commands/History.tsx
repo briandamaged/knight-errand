@@ -16,7 +16,7 @@ const BaseMessage = styled.pre `
   margin: 0.3em;
 
   white-space: pre-wrap;
-  color: white;
+  color: lime;
 `;
 
 const Request = styled(BaseMessage) `
@@ -36,7 +36,7 @@ const HistoryContainer = styled.div `
   border: 1px solid black;
   padding: 0.5em;
 
-  background-color: #bbbbff;
+  background-color: black;
 `
 
 const ItemFor = (
