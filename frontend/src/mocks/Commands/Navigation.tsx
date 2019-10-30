@@ -18,19 +18,21 @@ interface CommandHandler {
 
 export const Navigation: React.FC<{onCommand?: CommandHandler}> = ({onCommand})=> {
 
-  const go = (
-    (direction: string)=>
+  const ClickHandler = (
+    (cmd: any)=>
       function handleClick(e: React.MouseEvent<HTMLButtonElement>) {
         e.preventDefault();
         if(onCommand) {
-          onCommand({
-            name: "go",
-            direction: direction,
-          });
+          onCommand(cmd);
         }
       }
   );
 
+  const look = ClickHandler({name: "look"});
+  const go = (
+    (direction: string)=>
+      ClickHandler({name: "go", direction: direction})
+  );
 
   return (
     <NavigationContainer>
@@ -38,7 +40,7 @@ export const Navigation: React.FC<{onCommand?: CommandHandler}> = ({onCommand})=
       <NavigationButton onClick={go("north") } >North</NavigationButton>
       <NavigationButton onClick={go("northeast") } >NE</NavigationButton>
       <NavigationButton onClick={go("west") } >West</NavigationButton>
-      <NavigationButton >LOOK</NavigationButton>
+      <NavigationButton onClick={look} >LOOK</NavigationButton>
       <NavigationButton onClick={go("east") } >East</NavigationButton>
       <NavigationButton onClick={go("southwest") } >SW</NavigationButton>
       <NavigationButton onClick={go("south") } >South</NavigationButton>

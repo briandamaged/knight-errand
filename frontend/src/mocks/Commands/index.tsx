@@ -28,7 +28,6 @@ class Commands extends React.Component<{}, State> {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleLook = this.handleLook.bind(this);
     this.handleCommand = this.handleCommand.bind(this);
 
     // FIXME:
@@ -76,14 +75,6 @@ class Commands extends React.Component<{}, State> {
       value: '',
       log: this.state.log.concat(request),
     });
-  }
-
-  handleLook(event: React.MouseEvent) {
-    event.preventDefault();
-    const serializedCommand = JSON.stringify({
-      name: "look",
-    });
-    this.ws.send(serializedCommand);
   }
 
   handleCommand(cmd: any) {
