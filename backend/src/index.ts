@@ -15,7 +15,7 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand,
+  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand,
 } from './models';
 
 
@@ -78,6 +78,12 @@ handleCommand.use(CommandRule("go", function(ctx: CommandContext<GoCommand>) {
   engine.go({
     sender: ctx.sender,
     direction: ctx.command.direction,
+  });
+}));
+
+handleCommand.use(CommandRule("items", function(ctx: CommandContext<ItemsCommand>) {
+  engine.items({
+    sender: ctx.sender,
   });
 }));
 

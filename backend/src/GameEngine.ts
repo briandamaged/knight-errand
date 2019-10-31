@@ -118,4 +118,16 @@ ${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
     }
   }
 
+
+  items({sender}: {sender: Character}) {
+    const items = this.getProps(sender.itemIDs);
+    if(items.length === 0) {
+      sender.inform("You are not carrying anything");
+    } else {
+      const entries = items.map((item)=> ` - ${item.name}`);
+      const msg = ["You are carrying:", ...entries].join("\n");
+      sender.inform(msg);
+    }
+  }
+
 }

@@ -40,6 +40,10 @@ export interface GetCommand extends Command {
   target: string;
 }
 
+export interface ItemsCommand extends Command {
+  name: "items";
+}
+
 
 export class Character extends EventEmitter {
   currentLocationID: string;
