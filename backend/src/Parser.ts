@@ -93,6 +93,31 @@ export function createParser() {
       }),
     ));
   }
+
+  _parseInstruction.use(IF(
+    (ctx)=> ctx.words[0] === "get",
+    (ctx)=> ({
+      name: "get",
+      target: ctx.words[1],
+    }),
+  ));
+
+  _parseInstruction.use(IF(
+    (ctx)=> ctx.words[0] === "drop",
+    (ctx)=> ({
+      name: "drop",
+      target: ctx.words[1],
+    }),
+  ));
+
+  for(const alias of ["items", "inventory"]) {
+    _parseInstruction.use(IF(
+      (ctx)=> ctx.words[0] === alias,
+      (ctx)=> ({
+        name: "items",
+      }),
+    ));
+  }
   
   _parseInstruction.otherwise(RETURN(undefined));
 

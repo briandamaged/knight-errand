@@ -35,16 +35,32 @@ export interface AutoLookCommand extends Command {
   enabled: boolean,
 }
 
+export interface GetCommand extends Command {
+  name: "get";
+  target: string;
+}
+
+export interface DropCommand extends Command {
+  name: "drop";
+  target: string;
+}
+
+export interface ItemsCommand extends Command {
+  name: "items";
+}
+
 
 export class Character extends EventEmitter {
   currentLocationID: string;
   autolook: boolean;
+  itemIDs: PropID[];
 
   constructor({currentLocationID}: {currentLocationID: LocationID}) {
     super();
 
     this.currentLocationID = currentLocationID;
     this.autolook = true;
+    this.itemIDs = [];
   }
 
   inform(message: string) {
@@ -61,9 +77,21 @@ export type LocationID = string;
 
 export interface Location {
   id: LocationID,
+  name: string,
+
   getDescription(): string,
+
+  propIDs: PropID[],
 
   exits: {
     [key: string]: LocationID | undefined,
   },
+}
+
+
+export type PropID = string;
+
+export interface Prop {
+  id: PropID,
+  name: string,
 }

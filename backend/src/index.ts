@@ -15,7 +15,7 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand,
+  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand, DropCommand,
 } from './models';
 
 
@@ -81,6 +81,12 @@ handleCommand.use(CommandRule("go", function(ctx: CommandContext<GoCommand>) {
   });
 }));
 
+handleCommand.use(CommandRule("items", function(ctx: CommandContext<ItemsCommand>) {
+  engine.items({
+    sender: ctx.sender,
+  });
+}));
+
 handleCommand.use(CommandRule("help", function(ctx: CommandContext<HelpCommand>) {
   ctx.sender.inform(`Here are some things you can try:
   - look
@@ -97,6 +103,20 @@ handleCommand.use(CommandRule("autolook", function(ctx: CommandContext<AutoLookC
   );
 
   ctx.sender.inform(`autolook ${state}`);
+}));
+
+handleCommand.use(CommandRule("get", function(ctx: CommandContext<GetCommand>) {
+  engine.get({
+    sender: ctx.sender,
+    target: ctx.command.target,
+  });
+}));
+
+handleCommand.use(CommandRule("drop", function(ctx: CommandContext<DropCommand>) {
+  engine.drop({
+    sender: ctx.sender,
+    target: ctx.command.target,
+  });
 }));
 
 handleCommand.otherwise(function(ctx: CommandContext<Command>) {
@@ -146,5 +166,6 @@ wss.on('connection', function connection(ws) {
   });
 
 });
+
 
 console.log("Launched");
