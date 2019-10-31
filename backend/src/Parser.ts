@@ -93,6 +93,14 @@ export function createParser() {
       }),
     ));
   }
+
+  _parseInstruction.use(IF(
+    (ctx)=> ctx.words[0] === "get",
+    (ctx)=> ({
+      name: "get",
+      target: ctx.words[1],
+    }),
+  ));
   
   _parseInstruction.otherwise(RETURN(undefined));
 

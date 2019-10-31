@@ -38,17 +38,20 @@ export default class GameEngine extends EventEmitter {
     }
   }
 
+  getProps(ids: PropID[]): Prop[] {
+    return (
+      ids
+        .map((id)=> this.getProp(id))
+        .filter((prop)=> prop) // Remove undefineds
+    ) as Prop[];
+  }
+
 
 
   look({sender}: {sender: Character}) {
     const location = this.getLocation(sender.currentLocationID);
     if(location) {
-      const items = (
-        location
-          .propIDs
-          .map((id)=> this.getProp(id))
-          .filter((prop)=> typeof(prop) !== 'undefined')
-      );
+      const items = this.getProps(location.propIDs);
 
       sender.inform(`
 ${location.name}
@@ -93,6 +96,25 @@ ${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
     if(location) {
       sender.currentLocationID = location.id;
       sender.entered(location);
+    }
+  }
+
+
+  get({sender, target}: {sender: Character, target?: string}) {
+    const location = this.getLocation(sender.currentLocationID);
+    if(location) {
+      const props = this.getProps(location.propIDs);
+
+      const p = props.find((pp)=> pp.name === target);
+      if(p) {
+        // Remove the item from the location
+        location.propIDs = location.propIDs.filter((id)=> id !== p.id);
+
+        // Place the item into the the sender's inventory
+        sender.itemIDs.push(p.id);
+
+        sender.inform(`You pick up the ${p.name}`);
+      }
     }
   }
 
