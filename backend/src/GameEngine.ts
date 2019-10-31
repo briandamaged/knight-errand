@@ -28,6 +28,9 @@ export default class GameEngine extends EventEmitter {
     const location = this.getLocation(sender.currentLocationID);
     if(location) {
       sender.inform(`
+${location.name}
+-----
+
 ${location.getDescription()}
 
 Available Exits:

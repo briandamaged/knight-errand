@@ -61,6 +61,8 @@ export type LocationID = string;
 
 export interface Location {
   id: LocationID,
+  name: string,
+
   getDescription(): string,
 
   exits: {

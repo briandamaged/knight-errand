@@ -16,6 +16,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
 
   const townSquare: Location = {
     id: "townSquare",
+    name: "Town Square",
+
     getDescription() {
       return "It's more of a Village Oval, if we're being perfectly honest.";
     },
@@ -27,6 +29,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
 
   const tavern: Location = {
     id: "tavern",
+    name: "The Party Yawn Tavern and Inn",
+
     getDescription() {
       return "The sign on the door says 'The Party Yawn'";
     },
@@ -38,6 +42,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
 
   const church: Location = {
     id: "church",
+    name: "The Church of St. God",
+
     getDescription() {
       return "You are inside a church.  Everybody looks really prayerful.";
     },
@@ -49,6 +55,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
 
   const generalStore: Location = {
     id: "generalStore",
+    name: "The General Store",
+
     getDescription() {
       return "You are in a general store.  Believe it or not, you cannot purchase generals here.  Only things.";
     },
@@ -59,6 +67,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
 
   const blacksmith: Location = {
     id: "blacksmith",
+    name: "The Blacksmith",
+
     getDescription() {
       return "This is a blacksmith.  You can buy swords and stuff here, or something.";
     },
