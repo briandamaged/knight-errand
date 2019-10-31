@@ -65,7 +65,17 @@ export interface Location {
 
   getDescription(): string,
 
+  propIDs: PropID[],
+
   exits: {
     [key: string]: LocationID | undefined,
   },
+}
+
+
+export type PropID = string;
+
+export interface Prop {
+  id: PropID,
+  name: string,
 }

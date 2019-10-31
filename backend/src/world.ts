@@ -1,6 +1,6 @@
 
 import {
-  Location,
+  Location, Prop,
 } from './models';
 
 import GameEngine from './GameEngine';
@@ -21,6 +21,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     getDescription() {
       return "It's more of a Village Oval, if we're being perfectly honest.";
     },
+
+    propIDs: [],
     exits: {},
   };
 
@@ -34,6 +36,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     getDescription() {
       return "The sign on the door says 'The Party Yawn'";
     },
+
+    propIDs: [],
     exits: {},
   };
 
@@ -47,6 +51,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     getDescription() {
       return "You are inside a church.  Everybody looks really prayerful.";
     },
+
+    propIDs: [],
     exits: {},
   };
 
@@ -60,6 +66,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     getDescription() {
       return "You are in a general store.  Believe it or not, you cannot purchase generals here.  Only things.";
     },
+
+    propIDs: [],
     exits: {},
   };
 
@@ -72,6 +80,8 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     getDescription() {
       return "This is a blacksmith.  You can buy swords and stuff here, or something.";
     },
+
+    propIDs: [],
     exits: {},
   }
 
@@ -88,5 +98,23 @@ export function createWorld({engine}: {engine: GameEngine}): void {
 
   townSquare.exits.west = blacksmith.id;
   blacksmith.exits.east = townSquare.id;
+
+
+
+  const trash01: Prop = {
+    id: "trash01",
+    name: "gawbij",
+  };
+
+  const trash02: Prop = {
+    id: "trash02",
+    name: "trash",
+  };
+
+  engine.addProp(trash01);
+  engine.addProp(trash02);
+
+  townSquare.propIDs.push(trash01.id);
+  tavern.propIDs.push(trash02.id);
 }
 

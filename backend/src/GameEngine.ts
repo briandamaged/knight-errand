@@ -1,37 +1,63 @@
 
 import {
-  Location, Character, LocationID, Direction,
+  Location, Character, LocationID, Direction, Prop, PropID,
 } from './models';
 
 import EventEmitter from 'events';
 
 export default class GameEngine extends EventEmitter {
-  locationMap: Record<string, Location>;
+  locationMap: Record<LocationID, Location>;
+  propMap: Record<PropID, Prop>;
 
   constructor({} = {}) {
     super();
 
     this.locationMap = Object.create(null);
+    this.propMap = Object.create(null);
   }
 
   addLocation(location: Location) {
     this.locationMap[location.id] = location;
   }
 
-  getLocation(id: LocationID | undefined) {
+  getLocation(id?: LocationID) {
     if(id) {
       return this.locationMap[id];
     }
   }
 
+
+
+  addProp(prop: Prop) {
+    this.propMap[prop.id] = prop;
+  }
+
+  getProp(id?: PropID) {
+    if(id) {
+      return this.propMap[id];
+    }
+  }
+
+
+
   look({sender}: {sender: Character}) {
     const location = this.getLocation(sender.currentLocationID);
     if(location) {
+      const items = (
+        location
+          .propIDs
+          .map((id)=> this.getProp(id))
+          .filter((prop)=> typeof(prop) !== 'undefined')
+      );
+
       sender.inform(`
 ${location.name}
 -----
 
 ${location.getDescription()}
+
+Items:
+${items.map((item)=> ` - ${item.name}`).join("\n")}
 
 Available Exits:
 ${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
