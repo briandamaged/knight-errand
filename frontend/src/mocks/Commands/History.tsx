@@ -32,6 +32,10 @@ const Response = styled(BaseMessage) `
 
 
 const HistoryContainer = styled.div `
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+
   height: 100%;
   border: 1px solid black;
   padding: 0.5em;
