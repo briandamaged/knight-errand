@@ -15,7 +15,7 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand,
+  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand, DropCommand,
 } from './models';
 
 
@@ -107,6 +107,13 @@ handleCommand.use(CommandRule("autolook", function(ctx: CommandContext<AutoLookC
 
 handleCommand.use(CommandRule("get", function(ctx: CommandContext<GetCommand>) {
   engine.get({
+    sender: ctx.sender,
+    target: ctx.command.target,
+  });
+}));
+
+handleCommand.use(CommandRule("drop", function(ctx: CommandContext<DropCommand>) {
+  engine.drop({
     sender: ctx.sender,
     target: ctx.command.target,
   });

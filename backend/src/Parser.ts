@@ -102,6 +102,14 @@ export function createParser() {
     }),
   ));
 
+  _parseInstruction.use(IF(
+    (ctx)=> ctx.words[0] === "drop",
+    (ctx)=> ({
+      name: "drop",
+      target: ctx.words[1],
+    }),
+  ));
+
   for(const alias of ["items", "inventory"]) {
     _parseInstruction.use(IF(
       (ctx)=> ctx.words[0] === alias,

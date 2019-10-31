@@ -118,6 +118,26 @@ ${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
     }
   }
 
+  drop({sender, target}: {sender: Character, target?: string}) {
+    const items = this.getProps(sender.itemIDs);
+
+    const item = items.find((it)=> it.name === target);
+    if(item) {
+      const location = this.getLocation(sender.currentLocationID);
+
+      if(location) {
+        sender.itemIDs = sender.itemIDs.filter((id)=> id !== item.id);
+        location.propIDs.push(item.id);
+        sender.inform(`You drop the ${item.name}`);
+      } else {
+        sender.inform(`Hmm... better not.  You seem to be floating in the void`);
+      }
+    } else {
+      sender.inform(`You are not carrying the ${target}`);
+    }
+
+  }
+
 
   items({sender}: {sender: Character}) {
     const items = this.getProps(sender.itemIDs);

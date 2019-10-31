@@ -40,6 +40,11 @@ export interface GetCommand extends Command {
   target: string;
 }
 
+export interface DropCommand extends Command {
+  name: "drop";
+  target: string;
+}
+
 export interface ItemsCommand extends Command {
   name: "items";
 }
