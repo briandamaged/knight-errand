@@ -111,11 +111,11 @@ class Commands extends React.Component<{}, State> {
   render() {
     return (
       <MainGrid
-        rows={["80%", "20%"]}
-        columns={["1/2", "1/2"]}
+        rows={["10%", "60%", "20%", "10%"]}
+        columns={["10%", "80%", "10%"]}
         areas={[
-          { name: 'log', start: [0, 0], end: [0, 0] },
-          { name: 'navigation', start: [1, 0], end: [1, 0] },
+          { name: 'log', start: [1, 1], end: [1, 1] },
+          { name: 'navigation', start: [1, 2], end: [1, 2] },
         ]}
       >
 
