@@ -120,7 +120,12 @@ handleCommand.use(CommandRule("drop", function(ctx: CommandContext<DropCommand>)
 }));
 
 handleCommand.use(CommandRule("reset", function(ctx: CommandContext<ResetCommand>) {
-  ctx.sender.inform("Not implemented yet.  Sorry!");
+  // HACK: Breaking encapsulation to reset the world
+  engine.locationMap = Object.create(null);
+  engine.propMap = Object.create(null);
+  createWorld({engine});
+
+  ctx.sender.inform("kaBOOM!  The universe has been reset!");
 }));
 
 handleCommand.otherwise(function(ctx: CommandContext<Command>) {
