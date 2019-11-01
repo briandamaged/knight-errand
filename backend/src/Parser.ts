@@ -118,6 +118,13 @@ export function createParser() {
       }),
     ));
   }
+
+  _parseInstruction.use(IF(
+    (ctx)=> ctx.words[0] === "reset!",
+    (ctx)=> ({
+      name: "reset",
+    })
+  ));
   
   _parseInstruction.otherwise(RETURN(undefined));
 

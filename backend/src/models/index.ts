@@ -49,6 +49,10 @@ export interface ItemsCommand extends Command {
   name: "items";
 }
 
+export interface ResetCommand extends Command {
+  name: "reset";
+}
+
 
 export class Character extends EventEmitter {
   currentLocationID: string;

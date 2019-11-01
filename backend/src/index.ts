@@ -15,7 +15,7 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand, DropCommand,
+  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand, DropCommand, ResetCommand,
 } from './models';
 
 
@@ -117,6 +117,10 @@ handleCommand.use(CommandRule("drop", function(ctx: CommandContext<DropCommand>)
     sender: ctx.sender,
     target: ctx.command.target,
   });
+}));
+
+handleCommand.use(CommandRule("reset", function(ctx: CommandContext<ResetCommand>) {
+  ctx.sender.inform("Not implemented yet.  Sorry!");
 }));
 
 handleCommand.otherwise(function(ctx: CommandContext<Command>) {
