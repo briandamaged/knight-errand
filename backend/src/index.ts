@@ -33,23 +33,9 @@ const wss = new WebSocket.Server({
 
 const parseInstruction = createParser();
 
-interface CommandHandler {
-  (ctx: CommandContext<Command>): void
-}
 
-function handleCommand(ctx: CommandContext<Command>) {
-  for(const h of _handleCommand(ctx)) {
-    return h(ctx);
-  }
-}
 
-const _handleCommand = DepthFirstResolver<[CommandContext<Command>], CommandHandler>(
-  ()=> [
-    ParserResolver,
-    DescriptionResolver,
-    NavigationResolver,
-  ]
-);
+
 
 function* ParserResolver(ctx: CommandContext<Command>) {
   if(ctx.command.name === "raw") {
@@ -58,7 +44,7 @@ function* ParserResolver(ctx: CommandContext<Command>) {
       const newCommand = parseInstruction(rawCommand.content);
   
       if(newCommand) {
-        handleCommand({
+        engine.handleCommand({
           sender: ctx.sender,
           command: newCommand,
         })
@@ -90,6 +76,10 @@ function* NavigationResolver(ctx: CommandContext<Command>) {
 }
 
 
+engine.install(ParserResolver);
+engine.install(DescriptionResolver);
+engine.install(NavigationResolver);
+
 wss.on('connection', function connection(ws) {
 
   // FIXME: Ability to instantiate a Character without a currentLocationID
@@ -103,7 +93,7 @@ wss.on('connection', function connection(ws) {
 
   player.on('entered', function(this: Character, location) {
     if(this.autolook) {
-      handleCommand({
+      engine.handleCommand({
         sender: player,
         command: {
           name: "look",
@@ -127,7 +117,7 @@ wss.on('connection', function connection(ws) {
       command: command,
     };
 
-    handleCommand(commandContext);
+    engine.handleCommand(commandContext);
   });
 
 });
