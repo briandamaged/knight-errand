@@ -17,6 +17,7 @@ import {
 import {
   Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand, DropCommand, ResetCommand,
 } from './models';
+import { NavigationPlugin } from './plugins/navigation';
 
 
 
@@ -64,27 +65,16 @@ function* DescriptionResolver(ctx: CommandContext<Command>) {
 }
 
 
-function* NavigationResolver(ctx: CommandContext<Command>) {
-  if(ctx.command.name === "go") {
-    yield function(_ctx: CommandContext<Command>) {
-      engine.go({
-        sender: ctx.sender,
-        direction: (_ctx.command as GoCommand).direction,
-      })
-    }
-  }
-}
-
 
 engine.install(ParserResolver);
 engine.install(DescriptionResolver);
-engine.install(NavigationResolver);
+engine.install(NavigationPlugin(engine));
 
 wss.on('connection', function connection(ws) {
 
   // FIXME: Ability to instantiate a Character without a currentLocationID
   const player = new Character({
-    currentLocationID: "",
+    currentLocationID: "townSquare",
   });
 
   player.on('informed', function(message) {
@@ -100,11 +90,6 @@ wss.on('connection', function connection(ws) {
         }
       });
     }
-  });
-
-  engine.teleport({
-    sender: player,
-    locationID: "townSquare",
   });
 
   ws.on('message', function incoming(serializedCommand) {

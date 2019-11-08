@@ -98,37 +98,6 @@ ${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
   }
 
 
-  go({sender, direction}: {sender: Character, direction: Direction}) {
-    const location = this.getLocation(sender.currentLocationID);
-
-    if(location) {
-      const destinationID = location.exits[direction];
-      if(destinationID) {
-        const destination = this.getLocation(destinationID);
-        if(destination) {
-          sender.currentLocationID = destination.id;
-          sender.entered(destination);
-        } else {
-          sender.inform(`Could not load Location with id = ${JSON.stringify(destinationID)}`);
-        }
-      } else {
-        sender.inform("There does not appear to be an exit in that direction");
-      }
-    } else {
-      sender.inform("Somehow, you appear to be floating in the void.  How fun!");
-    }
-  }
-
-
-  teleport({sender, locationID}: {sender: Character, locationID: LocationID}) {
-    const location = this.getLocation(locationID);
-    if(location) {
-      sender.currentLocationID = location.id;
-      sender.entered(location);
-    }
-  }
-
-
   get({sender, target}: {sender: Character, target?: string}) {
     const location = this.getLocation(sender.currentLocationID);
     if(location) {
