@@ -1,6 +1,6 @@
 
 import { Command, CommandContext, CommandHandler } from "../models";
-import { CommandResolver } from "./utils";
+import { CommandResolver, Validate } from "./utils";
 import GameEngine from "../GameEngine";
 import { DepthFirstResolver } from "conditional-love";
 
@@ -27,17 +27,13 @@ export function isGetCommand(thing: any): thing is GetCommand {
 }
 
 
-export const resolveGetCommand = CommandResolver("get", function(ctx) {
-  if(isGetCommand(ctx.command)) {
-    get({
-      engine: ctx.engine,
-      sender: ctx.sender,
-      target: ctx.command.target,
-    });
-  } else {
-    // TODO: Complain about validation error
-  }
-});
+export const resolveGetCommand = CommandResolver("get", Validate(isGetCommand)(function(ctx) {
+  get({
+    engine: ctx.engine,
+    sender: ctx.sender,
+    target: ctx.command.target,
+  });
+}));
 
 
 
