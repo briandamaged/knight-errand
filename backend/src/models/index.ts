@@ -12,6 +12,12 @@ export interface Command {
   name: string,
 }
 
+export interface CommandHandler<CMD extends Command> {
+  (ctx: CommandContext<CMD>): void
+}
+
+
+
 export interface RawCommand extends Command {
   name: "raw",
   content: string,
@@ -30,20 +36,6 @@ export interface HelpCommand extends Command {
 export interface AutoLookCommand extends Command {
   name: "autolook",
   enabled: boolean,
-}
-
-export interface GetCommand extends Command {
-  name: "get";
-  target: string;
-}
-
-export interface DropCommand extends Command {
-  name: "drop";
-  target: string;
-}
-
-export interface ItemsCommand extends Command {
-  name: "items";
 }
 
 export interface ResetCommand extends Command {

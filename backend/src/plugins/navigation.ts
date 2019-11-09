@@ -1,21 +1,10 @@
 import GameEngine from "../GameEngine";
-import { CommandContext, Command, Character, Direction, LocationID} from "../models";
+import {
+  CommandContext, Command, Character, Direction, LocationID, CommandHandler
+} from "../models";
+
 import { DepthFirstResolver } from "conditional-love";
-
-
-interface CommandHandler<CMD extends Command = Command> {
-  (ctx: CommandContext<CMD>): void
-}
-
-const CommandResolver = (
-  <CMD extends Command = Command>(name: string, handler: CommandHandler<CMD>)=>
-    function* resolveCommand(ctx: CommandContext<CMD>) {
-      if(ctx.command.name === name) {
-        yield handler;
-      }
-    }
-)
-
+import { CommandResolver } from "./utils";
 
 
 

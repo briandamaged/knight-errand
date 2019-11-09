@@ -102,24 +102,6 @@ ${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
   }
 
 
-  get({sender, target}: {sender: Character, target?: string}) {
-    const location = this.getLocation(sender.currentLocationID);
-    if(location) {
-      const props = this.getProps(location.propIDs);
-
-      const p = props.find((pp)=> pp.name === target);
-      if(p) {
-        // Remove the item from the location
-        location.propIDs = location.propIDs.filter((id)=> id !== p.id);
-
-        // Place the item into the the sender's inventory
-        sender.itemIDs.push(p.id);
-
-        sender.inform(`You pick up the ${p.name}`);
-      }
-    }
-  }
-
   drop({sender, target}: {sender: Character, target?: string}) {
     const items = this.getProps(sender.itemIDs);
 
