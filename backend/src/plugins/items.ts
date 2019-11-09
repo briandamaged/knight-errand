@@ -1,5 +1,5 @@
 
-import { Command, CommandContext, CommandHandler } from "../models";
+import { Command, CommandContext, CommandHandler, Character } from "../models";
 import { CommandResolver, Validate } from "./utils";
 import GameEngine from "../GameEngine";
 import { DepthFirstResolver } from "conditional-love";
@@ -26,16 +26,40 @@ export function isGetCommand(thing: any): thing is GetCommand {
   );
 }
 
+export function isDropCommand(thing: any): thing is DropCommand {
+  return (
+    thing.name === "drop" &&
+    typeof(thing.target) === 'string'
+  );
+}
 
-export const resolveGetCommand = CommandResolver("get", Validate(isGetCommand)(function(ctx) {
+
+export const handleGetCommand = Validate(isGetCommand)(function(ctx) {
   get({
     engine: ctx.engine,
     sender: ctx.sender,
     target: ctx.command.target,
   });
-}));
+});
+
+export const handleDropCommand = Validate(isDropCommand)(function(ctx) {
+  drop({
+    engine: ctx.engine,
+    sender: ctx.sender,
+    target: ctx.command.target,
+  });
+});
+
+export const resolveGetCommand = CommandResolver("get", handleGetCommand);
+export const resolveDropCommand = CommandResolver("drop", handleDropCommand);
 
 
+export const resolveItemsCommands = DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command>>(
+  ()=> [
+    resolveGetCommand,
+    resolveDropCommand,
+  ]
+);
 
 
 export function get({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
@@ -58,8 +82,26 @@ export function get({engine, sender, target}: {engine: GameEngine, sender: Chara
 
 
 
-export const resolveItemsCommands = DepthFirstResolver<CommandContext<Command>, CommandHandler<Command>>(
-  ()=> [
-    resolveGetCommand,
-  ]
-);
+function drop({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
+  const items = engine.getProps(sender.itemIDs);
+
+  const item = items.find((it)=> it.name === target);
+  if(item) {
+    const location = engine.getLocation(sender.currentLocationID);
+
+    if(location) {
+      sender.itemIDs = sender.itemIDs.filter((id)=> id !== item.id);
+      location.propIDs.push(item.id);
+      sender.inform(`You drop the ${item.name}`);
+    } else {
+      sender.inform(`Hmm... better not.  You seem to be floating in the void`);
+    }
+  } else {
+    sender.inform(`You are not carrying the ${target}`);
+  }
+
+}
+
+
+
+
