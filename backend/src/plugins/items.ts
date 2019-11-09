@@ -33,6 +33,9 @@ export function isDropCommand(thing: any): thing is DropCommand {
   );
 }
 
+export function isItemsCommand(thing: any): thing is ItemsCommand {
+  return thing.name === "items";
+}
 
 export const handleGetCommand = Validate(isGetCommand)(function(ctx) {
   get({
@@ -50,14 +53,22 @@ export const handleDropCommand = Validate(isDropCommand)(function(ctx) {
   });
 });
 
+export const handleItemsCommand = Validate(isItemsCommand)(function(ctx) {
+  items({
+    engine: ctx.engine,
+    sender: ctx.sender,
+  });
+});
+
 export const resolveGetCommand = CommandResolver("get", handleGetCommand);
 export const resolveDropCommand = CommandResolver("drop", handleDropCommand);
+export const resolveItemsCommand = CommandResolver("items", handleItemsCommand);
 
-
-export const resolveItemsCommands = DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command>>(
+export const resolveInventoryCommands = DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command>>(
   ()=> [
     resolveGetCommand,
     resolveDropCommand,
+    resolveItemsCommand,
   ]
 );
 
@@ -103,5 +114,13 @@ function drop({engine, sender, target}: {engine: GameEngine, sender: Character, 
 }
 
 
-
-
+function items({engine, sender}: {engine: GameEngine, sender: Character}) {
+  const items = engine.getProps(sender.itemIDs);
+  if(items.length === 0) {
+    sender.inform("You are not carrying anything");
+  } else {
+    const entries = items.map((item)=> ` - ${item.name}`);
+    const msg = ["You are carrying:", ...entries].join("\n");
+    sender.inform(msg);
+  }
+}
