@@ -15,9 +15,9 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, GoCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand, DropCommand, ResetCommand,
+  Command, RawCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, GetCommand, ItemsCommand, DropCommand, ResetCommand,
 } from './models';
-import { NavigationPlugin } from './plugins/navigation';
+import { NavigationPlugin, resolveNavigation } from './plugins/navigation';
 
 
 
@@ -68,7 +68,7 @@ function* DescriptionResolver(ctx: CommandContext<Command>) {
 
 engine.install(ParserResolver);
 engine.install(DescriptionResolver);
-engine.install(NavigationPlugin(engine));
+engine.install(resolveNavigation);
 
 wss.on('connection', function connection(ws) {
 

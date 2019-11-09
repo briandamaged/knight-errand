@@ -1,9 +1,11 @@
 
 import { EventEmitter } from "events";
+import GameEngine from "../GameEngine";
 
 export interface CommandContext<CMD extends Command = Command> {
-  sender: Character,
-  command: CMD,
+  sender: Character;
+  engine: GameEngine;
+  command: CMD;
 }
 
 export interface Command {
@@ -16,11 +18,6 @@ export interface RawCommand extends Command {
 }
 
 export type Direction = string;
-
-export interface GoCommand extends Command {
-  name: "go",
-  direction: Direction,
-}
 
 export interface LookCommand extends Command {
   name: "look",

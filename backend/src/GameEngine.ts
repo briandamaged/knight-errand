@@ -36,7 +36,11 @@ export default class GameEngine extends EventEmitter {
   }
 
   handleCommand({sender, command}: {sender: Character, command: Command}) {
-    const ctx: CommandContext<Command> = {sender, command};
+    const ctx: CommandContext<Command> = {
+      sender: sender,
+      engine: this,
+      command: command,
+    };
 
     for(const h of this._handleCommand(ctx)) {
       return h(ctx);
