@@ -100,12 +100,10 @@ wss.on('connection', function connection(ws) {
     // TODO: This might explode if serializedCommand is a Buffer[]
     const command = JSON.parse(serializedCommand.toString());
 
-    const commandContext: CommandContext<Command> = {
+    engine.handleCommand({
       sender: player,
       command: command,
-    };
-
-    engine.handleCommand(commandContext);
+    });
   });
 
 });
