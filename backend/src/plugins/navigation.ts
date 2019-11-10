@@ -4,7 +4,7 @@ import {
 } from "../models";
 
 import { DepthFirstResolver } from "conditional-love";
-import { CommandResolver } from "./utils";
+import { WhenNameIs, Chain } from "./utils";
 
 
 
@@ -37,7 +37,7 @@ function isTeleportCommand(thing: any): thing is TeleportCommand {
 }
 
 
-const resolveGoCommand = CommandResolver("go", function(ctx) {
+const resolveGoCommand = WhenNameIs("go", function(ctx) {
   if(isGoCommand(ctx.command)) {
     go({
       engine: ctx.engine,
@@ -50,7 +50,7 @@ const resolveGoCommand = CommandResolver("go", function(ctx) {
   }
 });
 
-const resolveTeleportCommand = CommandResolver("teleport", function(ctx) {
+const resolveTeleportCommand = WhenNameIs("teleport", function(ctx) {
   if(isTeleportCommand(ctx.command)) {
     teleport({
       engine: ctx.engine,
@@ -64,15 +64,10 @@ const resolveTeleportCommand = CommandResolver("teleport", function(ctx) {
 });
 
 
-
-export const resolveNavigation = DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command> >(
-  ()=> [
-    resolveGoCommand,
-    resolveTeleportCommand,
-  ]
-)
-
-
+export const resolveNavigation = Chain([
+  resolveGoCommand,
+  resolveTeleportCommand,
+]);
 
 
 export function go({engine, sender, direction}: {engine: GameEngine, sender: Character, direction: Direction}) {

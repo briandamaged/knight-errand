@@ -1,6 +1,6 @@
 
 import { Command, CommandContext, CommandHandler, Character } from "../models";
-import { CommandResolver, Validate } from "./utils";
+import { WhenNameIs, Validate, Chain } from "./utils";
 import GameEngine from "../GameEngine";
 import { DepthFirstResolver } from "conditional-love";
 
@@ -60,17 +60,16 @@ export const handleItemsCommand = Validate(isItemsCommand)(function(ctx) {
   });
 });
 
-export const resolveGetCommand = CommandResolver("get", handleGetCommand);
-export const resolveDropCommand = CommandResolver("drop", handleDropCommand);
-export const resolveItemsCommand = CommandResolver("items", handleItemsCommand);
+export const resolveGetCommand = WhenNameIs("get", handleGetCommand);
+export const resolveDropCommand = WhenNameIs("drop", handleDropCommand);
+export const resolveItemsCommand = WhenNameIs("items", handleItemsCommand);
 
-export const resolveInventoryCommands = DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command>>(
-  ()=> [
-    resolveGetCommand,
-    resolveDropCommand,
-    resolveItemsCommand,
-  ]
-);
+
+export const resolveInventoryCommands = Chain([
+  resolveGetCommand,
+  resolveDropCommand,
+  resolveItemsCommand,
+]);
 
 
 export function get({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {

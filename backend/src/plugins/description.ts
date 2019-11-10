@@ -1,7 +1,7 @@
 
 import { Command, Character, CommandContext, CommandHandler } from "../models";
 import GameEngine from "../GameEngine";
-import { Validate, CommandResolver } from "./utils";
+import { Validate, WhenNameIs, Chain } from "./utils";
 import { DepthFirstResolver } from "conditional-love";
 
 export interface LookCommand extends Command {
@@ -21,15 +21,15 @@ const handleLookCommand = Validate(isLookCommand)(function(ctx) {
 });
 
 
-export const resolveLookCommand = CommandResolver("look", handleLookCommand);
+export const resolveLookCommand = WhenNameIs("look", handleLookCommand);
 
 
 
-export const resolveDescriptionCommands = DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command>>(
-  ()=> [
-    resolveLookCommand,
-  ]
-);
+export const resolveDescriptionCommands = Chain([
+  resolveLookCommand,
+]);
+
+
 
 
 

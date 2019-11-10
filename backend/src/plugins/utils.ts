@@ -1,6 +1,20 @@
 import { Command, CommandHandler, CommandContext } from "../models";
+import { DepthFirstResolver, Resolver } from "conditional-love";
 
-export const CommandResolver = (
+
+type CommandResolver = Resolver<[CommandContext<Command>], CommandHandler<Command>>;
+
+
+export const Chain = (
+  (resolvers: CommandResolver[])=>
+    DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command>>(
+      ()=> resolvers,
+    )
+);
+
+
+
+export const WhenNameIs = (
   <CMD extends Command = Command>(name: string, handler: CommandHandler<CMD>)=>
     function* resolveCommand(ctx: CommandContext<CMD>) {
       if(ctx.command.name === name) {
@@ -13,8 +27,6 @@ export const CommandResolver = (
 interface CommandValidator<CMD extends Command> {
   (thing: any): thing is CMD;
 }
-
-
 
 
 export const Validate = (
