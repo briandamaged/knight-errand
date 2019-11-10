@@ -4,7 +4,7 @@ import {
 } from "../models";
 
 import { DepthFirstResolver } from "conditional-love";
-import { WhenNameIs, Chain } from "./utils";
+import { WhenNameIs, Chain, Validate } from "./utils";
 
 
 
@@ -36,32 +36,24 @@ function isTeleportCommand(thing: any): thing is TeleportCommand {
   )
 }
 
-
-const resolveGoCommand = WhenNameIs("go", function(ctx) {
-  if(isGoCommand(ctx.command)) {
-    go({
-      engine: ctx.engine,
-      sender: ctx.sender,
-      direction: ctx.command.direction,
-    });
-  } else {
-    // TODO: Validation error of some kind?
-    console.log("Noooooooooooo!")
-  }
+const handleGoCommand = Validate(isGoCommand)(function(ctx) {
+  go({
+    engine: ctx.engine,
+    sender: ctx.sender,
+    direction: ctx.command.direction,
+  });
 });
 
-const resolveTeleportCommand = WhenNameIs("teleport", function(ctx) {
-  if(isTeleportCommand(ctx.command)) {
-    teleport({
-      engine: ctx.engine,
-      sender: ctx.sender,
-      locationID: ctx.command.locationID,
-    });
-  } else {
-    // TODO: Validation error of some kind?
-    console.log("Noooooooooooo!")
-  }
-});
+const handleTeleportCommand = Validate(isTeleportCommand)(function(ctx) {
+  teleport({
+    engine: ctx.engine,
+    sender: ctx.sender,
+    locationID: ctx.command.locationID,
+  });
+})
+
+const resolveGoCommand = WhenNameIs("go", handleGoCommand);
+const resolveTeleportCommand = WhenNameIs("teleport", handleTeleportCommand);
 
 
 export const resolveNavigation = Chain([
@@ -90,7 +82,6 @@ export function go({engine, sender, direction}: {engine: GameEngine, sender: Cha
     sender.inform("Somehow, you appear to be floating in the void.  How fun!");
   }
 }
-
 
 export function teleport({engine, sender, locationID}: {engine: GameEngine, sender: Character, locationID: LocationID}) {
   const location = engine.getLocation(locationID);
