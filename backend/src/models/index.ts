@@ -16,13 +16,6 @@ export interface CommandHandler<CMD extends Command> {
   (ctx: CommandContext<CMD>): void
 }
 
-
-
-export interface RawCommand extends Command {
-  name: "raw",
-  content: string,
-}
-
 export type Direction = string;
 
 export interface HelpCommand extends Command {

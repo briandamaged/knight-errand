@@ -15,15 +15,19 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, Character, CommandContext, HelpCommand, ResetCommand,
+  Command, Character, CommandContext, HelpCommand, ResetCommand,
 } from './models';
+
 import { resolveNavigation } from './plugins/navigation';
 import { resolveInventoryCommands } from './plugins/items';
 import { resolveDescriptionCommands } from './plugins/description';
+import { resolveInterpretCommand } from './plugins/interpreter';
 
 
 
-const engine = new GameEngine();
+const engine = new GameEngine({
+  parseInstruction: createParser(),
+});
 
 createWorld({
   engine: engine,
@@ -34,30 +38,7 @@ const wss = new WebSocket.Server({
 });
 
 
-const parseInstruction = createParser();
-
-
-
-
-
-function* ParserResolver(ctx: CommandContext<Command>) {
-  if(ctx.command.name === "raw") {
-    yield function(_ctx: CommandContext<Command>) {
-      const rawCommand = _ctx.command as RawCommand;
-      const newCommand = parseInstruction(rawCommand.content);
-  
-      if(newCommand) {
-        engine.handleCommand({
-          sender: ctx.sender,
-          command: newCommand,
-        })
-      }
-    }
-  }
-}
-
-
-engine.install(ParserResolver);
+engine.install(resolveInterpretCommand);
 engine.install(resolveDescriptionCommands);
 engine.install(resolveNavigation);
 engine.install(resolveInventoryCommands);

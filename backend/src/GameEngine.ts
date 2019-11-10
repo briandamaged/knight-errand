@@ -17,7 +17,10 @@ export default class GameEngine extends EventEmitter {
 
   _handleCommand: Resolver<[CommandContext<Command>], CommandHandler>;
 
-  constructor({} = {}) {
+  // TODO: Fix this hackety-hack
+  parseInstruction: (instruction: string)=> Command | undefined;
+
+  constructor({parseInstruction} = {}) {
     super();
 
     this.locationMap = Object.create(null);
@@ -29,6 +32,8 @@ export default class GameEngine extends EventEmitter {
     this._handleCommand = DepthFirstResolver<[CommandContext<Command>], CommandHandler>(
       ()=> this.commandResolvers,
     )
+
+    this.parseInstruction = parseInstruction;
   }
 
   install(resolver: Resolver<[CommandContext<Command>], CommandHandler>) {
@@ -45,6 +50,8 @@ export default class GameEngine extends EventEmitter {
     for(const h of this._handleCommand(ctx)) {
       return h(ctx);
     }
+
+    sender.inform(`Received unknown command:\n\n${JSON.stringify(command, null, 2)}`)
   }
 
 
