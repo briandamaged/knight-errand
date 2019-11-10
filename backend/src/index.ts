@@ -15,7 +15,7 @@ import {
 } from './world';
 
 import {
-  Command, RawCommand, Character, CommandContext, LookCommand, HelpCommand, AutoLookCommand, ResetCommand,
+  Command, RawCommand, Character, CommandContext, HelpCommand, ResetCommand,
 } from './models';
 import { resolveNavigation } from './plugins/navigation';
 import { resolveInventoryCommands } from './plugins/items';

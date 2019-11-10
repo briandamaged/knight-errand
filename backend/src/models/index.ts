@@ -29,11 +29,6 @@ export interface HelpCommand extends Command {
   name: "help",
 }
 
-export interface AutoLookCommand extends Command {
-  name: "autolook",
-  enabled: boolean,
-}
-
 export interface ResetCommand extends Command {
   name: "reset";
 }

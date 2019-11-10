@@ -73,16 +73,20 @@ export function createParser() {
       if(["on", "true", "1"].includes(ctx.words[1])) {
         return {
           name: "autolook",
-          enabled: true,
+          state: true,
         };
       } else if(["off", "false", "0"].includes(ctx.words[1])) {
         return {
           name: "autolook",
-          enabled: false,
+          state: false,
         };
+      } else {
+        return {
+          name: "autolook",
+        }
       }
     }
-  ))
+  ));
 
 
   for(const alias of ["help", "?"]) {
