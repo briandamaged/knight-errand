@@ -1,26 +1,24 @@
 
 import {
-  Location, Character, LocationID, Direction, Prop, PropID, CommandContext, Command,
+  Location, Character, LocationID, Prop, PropID, CommandContext, Command, CommandHandler,
 } from './models';
 
 import EventEmitter from 'events';
 import { Resolver, DepthFirstResolver } from 'conditional-love';
 
-interface CommandHandler {
-  (ctx: CommandContext<Command>): void
-}
+
 
 export default class GameEngine extends EventEmitter {
   locationMap: Record<LocationID, Location>;
   propMap: Record<PropID, Prop>;
-  commandResolvers: Resolver<[CommandContext<Command>], CommandHandler>[];
+  commandResolvers: Resolver<[CommandContext<Command>], CommandHandler<Command> >[];
 
-  _handleCommand: Resolver<[CommandContext<Command>], CommandHandler>;
+  _handleCommand: Resolver<[CommandContext<Command>], CommandHandler<Command> >;
 
   // TODO: Fix this hackety-hack
   parseInstruction: (instruction: string)=> Command | undefined;
 
-  constructor({parseInstruction} = {}) {
+  constructor({parseInstruction}: {parseInstruction: (instruction: string)=> Command | undefined}) {
     super();
 
     this.locationMap = Object.create(null);
@@ -29,14 +27,14 @@ export default class GameEngine extends EventEmitter {
     this.commandResolvers = [];
 
 
-    this._handleCommand = DepthFirstResolver<[CommandContext<Command>], CommandHandler>(
+    this._handleCommand = DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command> >(
       ()=> this.commandResolvers,
     )
 
     this.parseInstruction = parseInstruction;
   }
 
-  install(resolver: Resolver<[CommandContext<Command>], CommandHandler>) {
+  install(resolver: Resolver<[CommandContext<Command>], CommandHandler<Command> >) {
     this.commandResolvers.push(resolver);
   }
 

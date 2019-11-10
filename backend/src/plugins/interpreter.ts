@@ -4,7 +4,7 @@ import { Validate, WhenNameIs } from "./utils";
 const INTERPRET = "interpret";
 
 export interface InterpretCommand extends Command {
-  name: INTERPRET,
+  name: "interpret",
   content: string,
 }
 

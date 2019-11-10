@@ -2,8 +2,7 @@
 import WebSocket from 'ws';
 
 import {
-  Dispatcher,
-  IF, RETURN, Handler, Rule, DO_NOTHING, DepthFirstResolver,
+  DepthFirstResolver,
 } from 'conditional-love';
 
 import GameEngine from './GameEngine';
@@ -15,7 +14,7 @@ import {
 } from './world';
 
 import {
-  Command, Character, CommandContext, HelpCommand, ResetCommand,
+  Command, Character, CommandContext,
 } from './models';
 
 import { resolveNavigation } from './plugins/navigation';

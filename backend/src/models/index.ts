@@ -18,14 +18,6 @@ export interface CommandHandler<CMD extends Command> {
 
 export type Direction = string;
 
-export interface HelpCommand extends Command {
-  name: "help",
-}
-
-export interface ResetCommand extends Command {
-  name: "reset";
-}
-
 
 export class Character extends EventEmitter {
   currentLocationID: string;
