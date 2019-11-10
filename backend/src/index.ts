@@ -19,6 +19,7 @@ import {
 } from './models';
 import { resolveNavigation } from './plugins/navigation';
 import { resolveInventoryCommands } from './plugins/items';
+import { resolveDescriptionCommands } from './plugins/description';
 
 
 
@@ -55,20 +56,9 @@ function* ParserResolver(ctx: CommandContext<Command>) {
   }
 }
 
-function* DescriptionResolver(ctx: CommandContext<Command>) {
-  if(ctx.command.name === "look") {
-    yield function(ctx: CommandContext<Command>) {
-      engine.look({
-        sender: ctx.sender
-      })
-    }
-  }
-}
-
-
 
 engine.install(ParserResolver);
-engine.install(DescriptionResolver);
+engine.install(resolveDescriptionCommands);
 engine.install(resolveNavigation);
 engine.install(resolveInventoryCommands);
 

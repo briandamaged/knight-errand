@@ -25,10 +25,6 @@ export interface RawCommand extends Command {
 
 export type Direction = string;
 
-export interface LookCommand extends Command {
-  name: "look",
-}
-
 export interface HelpCommand extends Command {
   name: "help",
 }
