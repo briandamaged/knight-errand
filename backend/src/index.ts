@@ -17,15 +17,19 @@ import {
   Command, Character, CommandContext,
 } from './models';
 
-import { resolveNavigation } from './plugins/navigation';
+import { resolveNavigation, resolveNavigationInstructions } from './plugins/navigation';
 import { resolveInventoryCommands } from './plugins/items';
-import { resolveDescriptionCommands } from './plugins/description';
+import { resolveDescriptionCommands, resolveDescriptionInstructions } from './plugins/description';
 import { resolveInterpretCommand } from './plugins/interpreter';
+import { Chain } from './plugins/utils';
 
 
 
 const engine = new GameEngine({
-  parseInstruction: createParser(),
+  _parseInstruction: Chain([
+    resolveDescriptionInstructions,
+    resolveNavigationInstructions,
+  ]),
 });
 
 createWorld({

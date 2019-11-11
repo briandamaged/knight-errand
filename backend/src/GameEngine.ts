@@ -16,9 +16,9 @@ export default class GameEngine extends EventEmitter {
   _handleCommand: Resolver<[CommandContext<Command>], CommandHandler<Command> >;
 
   // TODO: Fix this hackety-hack
-  parseInstruction: (instruction: string)=> Command | undefined;
+  _parseInstruction: (instruction: string)=> Iterable<Command>;
 
-  constructor({parseInstruction}: {parseInstruction: (instruction: string)=> Command | undefined}) {
+  constructor({_parseInstruction}: {_parseInstruction: (instruction: string)=> Iterable<Command>}) {
     super();
 
     this.locationMap = Object.create(null);
@@ -31,7 +31,13 @@ export default class GameEngine extends EventEmitter {
       ()=> this.commandResolvers,
     )
 
-    this.parseInstruction = parseInstruction;
+    this._parseInstruction = _parseInstruction;
+  }
+
+  parseInstruction(instruction: string) {
+    for(const cmd of this._parseInstruction(instruction)) {
+      return cmd;
+    }
   }
 
   install(resolver: Resolver<[CommandContext<Command>], CommandHandler<Command> >) {
