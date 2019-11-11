@@ -1,8 +1,9 @@
 
 import { Command, Character, CommandContext, CommandHandler } from "../models";
 import GameEngine from "../GameEngine";
-import { Validate, WhenNameIs, Chain } from "./utils";
+import { Validate, WhenNameIs, Chain, AS } from "./utils";
 import { DepthFirstResolver } from "conditional-love";
+import { ParsingContext, withParsingContext, isEnabledWord, isDisabledWord } from "../Parser";
 
 export interface LookCommand extends Command {
   name: "look",
@@ -90,3 +91,39 @@ export function autolook({sender, state}: {sender: Character, state?: boolean}) 
     sender.inform(`Autolook is currently ${getCurrentState()}`);
   }
 }
+
+function* resolveLookInstruction(ctx: ParsingContext): Iterable<Command> {
+  if(ctx.words[0] === 'look') {
+    yield AS<LookCommand>({
+      name: "look",
+    });
+  }
+}
+
+
+
+export function getDesiredAutoLookState(word: string) {
+  if(isEnabledWord(word)) {
+    return true;
+  } else if(isDisabledWord(word)) {
+    return false;
+  }
+}
+
+
+export function* resolveAutoLookInstruction(ctx: ParsingContext): Iterable<Command> {
+  if(ctx.words[0] === 'autolook') {
+    yield AS<AutoLookCommand>({
+      name: "autolook",
+      state: getDesiredAutoLookState(ctx.words[1]),
+    });
+  }
+}
+
+
+export const resolveDescriptionInstructions = withParsingContext(
+  Chain([
+    resolveLookInstruction,
+    resolveAutoLookInstruction,
+  ])
+)

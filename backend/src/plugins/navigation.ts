@@ -3,8 +3,9 @@ import {
   CommandContext, Command, Character, Direction, LocationID, CommandHandler
 } from "../models";
 
-import { DepthFirstResolver, Resolver } from "conditional-love";
-import { WhenNameIs, Chain, Validate } from "./utils";
+import { DepthFirstResolver } from "conditional-love";
+import { WhenNameIs, Chain, Validate, AS } from "./utils";
+import { ParsingContext, withParsingContext } from "../Parser";
 
 
 
@@ -91,40 +92,6 @@ export function teleport({engine, sender, locationID}: {engine: GameEngine, send
   }
 }
 
-
-
-// TODO: Extract this
-function AS<T>(thing: T) {
-  return thing;
-}
-
-
-// TODO: Extract this
-export interface ParsingContext {
-  raw: string,
-  normalized: string,
-  words: string[],
-}
-
-
-function createParsingContext(instruction: string): ParsingContext {
-  const normalized = instruction.toLowerCase();
-  return {
-    raw: instruction,
-    normalized: normalized,
-    words: normalized.split(/\s+/),
-  };
-}
-
-
-// Decorator that converts an Instruction into a ParsingContext
-const withParsingContext = (
-  (next: Resolver<[ParsingContext], Command>)=>
-    function* addParsingContext(this: any, instruction: string) {
-      const ctx = createParsingContext(instruction);
-      yield* next.call(this, ctx);
-    }
-)
 
 
 

@@ -2,6 +2,14 @@ import { Command, CommandHandler, CommandContext } from "../models";
 import { DepthFirstResolver, Resolver } from "conditional-love";
 
 
+
+// Allows Typecheck to verify something's type without complaining
+// about the Object keys
+export function AS<T>(thing: T) {
+  return thing;
+}
+
+
 export const Chain = (
   <ARGS extends any[], OUTPUT>(resolvers: Resolver<ARGS, OUTPUT>[])=>
     DepthFirstResolver<ARGS, OUTPUT>(
