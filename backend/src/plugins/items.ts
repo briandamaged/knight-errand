@@ -1,8 +1,9 @@
 
 import { Command, CommandContext, CommandHandler, Character } from "../models";
-import { WhenNameIs, Validate, Chain } from "./utils";
+import { WhenNameIs, Validate, Chain, AS } from "./utils";
 import GameEngine from "../GameEngine";
 import { DepthFirstResolver } from "conditional-love";
+import { ParsingContext, withParsingContext } from "../Parser";
 
 export interface GetCommand extends Command {
   name: "get";
@@ -123,3 +124,54 @@ function items({engine, sender}: {engine: GameEngine, sender: Character}) {
     sender.inform(msg);
   }
 }
+
+
+
+function* _resolveInventoryInstructions(ctx: ParsingContext) {
+  if(ctx.words[0] === "get") {
+    yield AS<GetCommand>({
+      name: "get",
+      target: ctx.words[1],
+    });
+  }
+
+  if(ctx.words[0] === "drop") {
+    yield AS<DropCommand>({
+      name: "drop",
+      target: ctx.words[1],
+    });
+  }
+
+  for(const alias of ["items", "inventory"]) {
+    if(ctx.words[0] === alias) {
+      yield AS<ItemsCommand>({
+        name: "items",
+      });
+    }
+  }
+}
+
+
+export const resolveInventoryInstructions = withParsingContext(function* (ctx: ParsingContext) {
+  if(ctx.words[0] === "get") {
+    yield AS<GetCommand>({
+      name: "get",
+      target: ctx.words[1],
+    });
+  }
+
+  if(ctx.words[0] === "drop") {
+    yield AS<DropCommand>({
+      name: "drop",
+      target: ctx.words[1],
+    });
+  }
+
+  for(const alias of ["items", "inventory"]) {
+    if(ctx.words[0] === alias) {
+      yield AS<ItemsCommand>({
+        name: "items",
+      });
+    }
+  }
+});

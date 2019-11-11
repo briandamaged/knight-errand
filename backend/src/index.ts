@@ -1,13 +1,7 @@
 
 import WebSocket from 'ws';
 
-import {
-  DepthFirstResolver,
-} from 'conditional-love';
-
 import GameEngine from './GameEngine';
-
-import {createParser} from './Parser';
 
 import {
   createWorld,
@@ -18,7 +12,7 @@ import {
 } from './models';
 
 import { resolveNavigation, resolveNavigationInstructions } from './plugins/navigation';
-import { resolveInventoryCommands } from './plugins/items';
+import { resolveInventoryCommands, resolveInventoryInstructions } from './plugins/items';
 import { resolveDescriptionCommands, resolveDescriptionInstructions } from './plugins/description';
 import { resolveInterpretCommand } from './plugins/interpreter';
 import { Chain } from './plugins/utils';
@@ -29,6 +23,7 @@ const engine = new GameEngine({
   _parseInstruction: Chain([
     resolveDescriptionInstructions,
     resolveNavigationInstructions,
+    resolveInventoryInstructions,
   ]),
 });
 
