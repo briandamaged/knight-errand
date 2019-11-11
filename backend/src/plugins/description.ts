@@ -92,11 +92,14 @@ export function autolook({sender, state}: {sender: Character, state?: boolean}) 
   }
 }
 
+
 function* resolveLookInstruction(ctx: ParsingContext): Iterable<Command> {
-  if(ctx.words[0] === 'look') {
-    yield AS<LookCommand>({
-      name: "look",
-    });
+  for(const alias of ["look", "l", "describe"]) {
+    if(ctx.words[0] === alias) {
+      yield AS<LookCommand>({
+        name: "look",
+      });
+    }
   }
 }
 
