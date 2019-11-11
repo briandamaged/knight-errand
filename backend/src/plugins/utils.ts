@@ -2,12 +2,9 @@ import { Command, CommandHandler, CommandContext } from "../models";
 import { DepthFirstResolver, Resolver } from "conditional-love";
 
 
-type CommandResolver = Resolver<[CommandContext<Command>], CommandHandler<Command>>;
-
-
 export const Chain = (
-  (resolvers: CommandResolver[])=>
-    DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command>>(
+  <ARGS extends any[], OUTPUT>(resolvers: Resolver<ARGS, OUTPUT>[])=>
+    DepthFirstResolver<ARGS, OUTPUT>(
       ()=> resolvers,
     )
 );

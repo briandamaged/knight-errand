@@ -90,3 +90,63 @@ export function teleport({engine, sender, locationID}: {engine: GameEngine, send
     sender.entered(location);
   }
 }
+
+
+
+// TODO: Extract this
+function AS<T>(thing: T) {
+  return thing;
+}
+
+
+const directionMap = {
+  north: ["north", "n"],
+  south: ["south", "s"],
+  east: ["east", "e"],
+  west: ["west", "w"],
+  northeast: ["northeast", "ne"],
+  northwest: ["northwest", "nw"],
+  southeast: ["southeast", "se"],
+  southwest: ["southwest", "sw"],
+};
+
+
+export function* resolveGoInstruction(instruction: string): Iterable<Command> {
+  const words = instruction.split(/\s+/);
+
+  if(words[0] === "go") {
+    yield AS<GoCommand>({
+      name: "go",
+      direction: words[1],
+    });
+  }
+
+  for(const [direction, aliases] of Object.entries(directionMap)) {
+    for(const a of aliases) {
+      if(words[0] === a) {
+        yield AS<GoCommand>({
+          name: "go",
+          direction: direction,
+        });
+      }
+    }
+  }
+
+}
+
+export function* resolveTeleportInstruction(instruction: string): Iterable<Command> {
+  const words = instruction.split(/\s+/);
+
+  if(words[0] === "teleport") {
+    yield AS<TeleportCommand>({
+      name: "teleport",
+      locationID: words[1],
+    })
+  }
+}
+
+
+export const resolveNavigationInstructions = Chain([
+  resolveGoInstruction,
+  resolveTeleportInstruction,
+]);
