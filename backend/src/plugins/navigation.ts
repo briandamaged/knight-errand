@@ -3,7 +3,7 @@ import {
   CommandContext, Command, Character, Direction, LocationID, CommandHandler
 } from "../models";
 
-import { DepthFirstResolver } from "conditional-love";
+import { DepthFirstResolver, Resolver } from "conditional-love";
 import { WhenNameIs, Chain, Validate } from "./utils";
 
 
@@ -99,6 +99,35 @@ function AS<T>(thing: T) {
 }
 
 
+// TODO: Extract this
+export interface ParsingContext {
+  raw: string,
+  normalized: string,
+  words: string[],
+}
+
+
+function createParsingContext(instruction: string): ParsingContext {
+  const normalized = instruction.toLowerCase();
+  return {
+    raw: instruction,
+    normalized: normalized,
+    words: normalized.split(/\s+/),
+  };
+}
+
+
+// Decorator that converts an Instruction into a ParsingContext
+const withParsingContext = (
+  (next: Resolver<[ParsingContext], Command>)=>
+    function* addParsingContext(this: any, instruction: string) {
+      const ctx = createParsingContext(instruction);
+      yield* next.call(this, ctx);
+    }
+)
+
+
+
 const directionMap = {
   north: ["north", "n"],
   south: ["south", "s"],
@@ -111,19 +140,18 @@ const directionMap = {
 };
 
 
-export function* resolveGoInstruction(instruction: string): Iterable<Command> {
-  const words = instruction.split(/\s+/);
 
-  if(words[0] === "go") {
+export function* resolveGoInstruction(ctx: ParsingContext): Iterable<Command> {
+  if(ctx.words[0] === "go") {
     yield AS<GoCommand>({
       name: "go",
-      direction: words[1],
+      direction: ctx.words[1],
     });
   }
 
   for(const [direction, aliases] of Object.entries(directionMap)) {
     for(const a of aliases) {
-      if(words[0] === a) {
+      if(ctx.words[0] === a) {
         yield AS<GoCommand>({
           name: "go",
           direction: direction,
@@ -134,19 +162,22 @@ export function* resolveGoInstruction(instruction: string): Iterable<Command> {
 
 }
 
-export function* resolveTeleportInstruction(instruction: string): Iterable<Command> {
-  const words = instruction.split(/\s+/);
 
-  if(words[0] === "teleport") {
+
+// TODO: Figure out how to handle admin-only commands
+export function* resolveTeleportInstruction(ctx: ParsingContext): Iterable<Command> {
+  if(ctx.words[0] === "teleport") {
     yield AS<TeleportCommand>({
       name: "teleport",
-      locationID: words[1],
+      locationID: ctx.words[1],
     })
   }
 }
 
 
-export const resolveNavigationInstructions = Chain([
-  resolveGoInstruction,
-  resolveTeleportInstruction,
-]);
+export const resolveNavigationInstructions = withParsingContext(
+  Chain([
+    resolveGoInstruction,
+    resolveTeleportInstruction,
+  ])
+);
