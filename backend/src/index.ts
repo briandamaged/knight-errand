@@ -16,6 +16,7 @@ import { resolveInventoryCommands, resolveInventoryInstructions } from './plugin
 import { resolveDescriptionCommands, resolveDescriptionInstructions } from './plugins/description';
 import { resolveInterpretCommand } from './plugins/interpreter';
 import { Chain } from './plugins/utils';
+import { resolveConsumableInstructions, resolveConsumableCommands } from './plugins/consumables';
 
 
 
@@ -24,6 +25,7 @@ const engine = new GameEngine({
     resolveDescriptionInstructions,
     resolveNavigationInstructions,
     resolveInventoryInstructions,
+    resolveConsumableInstructions,
   ]),
 });
 
@@ -40,6 +42,7 @@ engine.install(resolveInterpretCommand);
 engine.install(resolveDescriptionCommands);
 engine.install(resolveNavigation);
 engine.install(resolveInventoryCommands);
+engine.install(resolveConsumableCommands);
 
 
 wss.on('connection', function connection(ws) {
