@@ -81,7 +81,7 @@ class Commands extends React.Component<{}, State> {
 
   handleSubmit = (event: FormEvent<HTMLFormElement>)=> {
     const serializedCommand = JSON.stringify({
-      "name": "raw",
+      "name": "interpret",
       "content": this.state.value,
     });
 

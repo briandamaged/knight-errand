@@ -1,20 +1,64 @@
 
 import {
-  Location, Character, LocationID, Direction, Prop, PropID,
+  Location, Character, LocationID, Prop, PropID, CommandContext, Command, CommandHandler,
 } from './models';
 
 import EventEmitter from 'events';
+import { Resolver, DepthFirstResolver } from 'conditional-love';
+
+
 
 export default class GameEngine extends EventEmitter {
   locationMap: Record<LocationID, Location>;
   propMap: Record<PropID, Prop>;
+  commandResolvers: Resolver<[CommandContext<Command>], CommandHandler<Command> >[];
 
-  constructor({} = {}) {
+  _handleCommand: Resolver<[CommandContext<Command>], CommandHandler<Command> >;
+
+  // TODO: Fix this hackety-hack
+  _parseInstruction: (instruction: string)=> Iterable<Command>;
+
+  constructor({_parseInstruction}: {_parseInstruction: (instruction: string)=> Iterable<Command>}) {
     super();
 
     this.locationMap = Object.create(null);
     this.propMap = Object.create(null);
+
+    this.commandResolvers = [];
+
+
+    this._handleCommand = DepthFirstResolver<[CommandContext<Command>], CommandHandler<Command> >(
+      ()=> this.commandResolvers,
+    )
+
+    this._parseInstruction = _parseInstruction;
   }
+
+  parseInstruction(instruction: string) {
+    for(const cmd of this._parseInstruction(instruction)) {
+      return cmd;
+    }
+  }
+
+  install(resolver: Resolver<[CommandContext<Command>], CommandHandler<Command> >) {
+    this.commandResolvers.push(resolver);
+  }
+
+  handleCommand({sender, command}: {sender: Character, command: Command}) {
+    const ctx: CommandContext<Command> = {
+      sender: sender,
+      engine: this,
+      command: command,
+    };
+
+    for(const h of this._handleCommand(ctx)) {
+      return h(ctx);
+    }
+
+    sender.inform(`Received unknown command:\n\n${JSON.stringify(command, null, 2)}`)
+  }
+
+
 
   addLocation(location: Location) {
     this.locationMap[location.id] = location;
@@ -46,108 +90,5 @@ export default class GameEngine extends EventEmitter {
     ) as Prop[];
   }
 
-
-
-  look({sender}: {sender: Character}) {
-    const location = this.getLocation(sender.currentLocationID);
-    if(location) {
-      const items = this.getProps(location.propIDs);
-
-      sender.inform(`
-${location.name}
------
-
-${location.getDescription()}
-
-Items:
-${items.map((item)=> ` - ${item.name}`).join("\n")}
-
-Available Exits:
-${ Object.keys(location.exits).map((x)=> ` - ${x}`).join("\n") }
-      `);
-    }
-  }
-
-
-  go({sender, direction}: {sender: Character, direction: Direction}) {
-    const location = this.getLocation(sender.currentLocationID);
-
-    if(location) {
-      const destinationID = location.exits[direction];
-      if(destinationID) {
-        const destination = this.getLocation(destinationID);
-        if(destination) {
-          sender.currentLocationID = destination.id;
-          sender.entered(destination);
-        } else {
-          sender.inform(`Could not load Location with id = ${JSON.stringify(destinationID)}`);
-        }
-      } else {
-        sender.inform("There does not appear to be an exit in that direction");
-      }
-    } else {
-      sender.inform("Somehow, you appear to be floating in the void.  How fun!");
-    }
-  }
-
-
-  teleport({sender, locationID}: {sender: Character, locationID: LocationID}) {
-    const location = this.getLocation(locationID);
-    if(location) {
-      sender.currentLocationID = location.id;
-      sender.entered(location);
-    }
-  }
-
-
-  get({sender, target}: {sender: Character, target?: string}) {
-    const location = this.getLocation(sender.currentLocationID);
-    if(location) {
-      const props = this.getProps(location.propIDs);
-
-      const p = props.find((pp)=> pp.name === target);
-      if(p) {
-        // Remove the item from the location
-        location.propIDs = location.propIDs.filter((id)=> id !== p.id);
-
-        // Place the item into the the sender's inventory
-        sender.itemIDs.push(p.id);
-
-        sender.inform(`You pick up the ${p.name}`);
-      }
-    }
-  }
-
-  drop({sender, target}: {sender: Character, target?: string}) {
-    const items = this.getProps(sender.itemIDs);
-
-    const item = items.find((it)=> it.name === target);
-    if(item) {
-      const location = this.getLocation(sender.currentLocationID);
-
-      if(location) {
-        sender.itemIDs = sender.itemIDs.filter((id)=> id !== item.id);
-        location.propIDs.push(item.id);
-        sender.inform(`You drop the ${item.name}`);
-      } else {
-        sender.inform(`Hmm... better not.  You seem to be floating in the void`);
-      }
-    } else {
-      sender.inform(`You are not carrying the ${target}`);
-    }
-
-  }
-
-
-  items({sender}: {sender: Character}) {
-    const items = this.getProps(sender.itemIDs);
-    if(items.length === 0) {
-      sender.inform("You are not carrying anything");
-    } else {
-      const entries = items.map((item)=> ` - ${item.name}`);
-      const msg = ["You are carrying:", ...entries].join("\n");
-      sender.inform(msg);
-    }
-  }
 
 }
