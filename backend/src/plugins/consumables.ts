@@ -75,11 +75,23 @@ export const handleEatCommand = Validate(isEatCommand)(function(ctx: CommandCont
   });
 });
 
+export const handleDrinkCommand = Validate(isDrinkCommand)(function(ctx: CommandContext<DrinkCommand>) {
+  drink({
+    engine: ctx.engine,
+    sender: ctx.sender,
+    target: ctx.command.target,
+  });
+});
+
+
+
 export const resolveEatCommand = WhenNameIs("eat", handleEatCommand);
+export const resolveDrinkCommand = WhenNameIs("drink", handleDrinkCommand);
 
 
 export const resolveConsumableCommands = Chain([
   resolveEatCommand,
+  resolveDrinkCommand,
 ]);
 
 
@@ -87,10 +99,22 @@ export async function eat({engine, sender, target}: {engine: GameEngine, sender:
   const props = resolveProps({engine, sender, target});
 
   for(const p of props) {
-    sender.inform(`You eat the ${p.name}`);
+    return sender.inform(`You eat the ${p.name}`);
   }
+
+  sender.inform(`You don't see any ${target}`);
 }
 
+
+export async function drink({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}) {
+  const props = resolveProps({engine, sender, target});
+
+  for(const p of props) {
+    return sender.inform(`You drink the ${p.name}`);
+  }
+
+  sender.inform(`You don't see any ${target}`);
+}
 
 
 export function* _resolveConsumableInstructions(ctx: ParsingContext) {
@@ -100,6 +124,14 @@ export function* _resolveConsumableInstructions(ctx: ParsingContext) {
       target: ctx.words[1],
     });
   }
+
+  if(ctx.words[0] === "drink") {
+    yield AS<DrinkCommand>({
+      name: "drink",
+      target: ctx.words[1],
+    });
+  }
 }
+
 
 export const resolveConsumableInstructions = withParsingContext(_resolveConsumableInstructions);
