@@ -1,9 +1,10 @@
 
 import {
-  Location, Prop,
+  Location, Prop, Character,
 } from './models';
 
 import GameEngine from './GameEngine';
+import { Edible } from './plugins/consumables';
 
 // Town Hall
 // Church
@@ -111,10 +112,24 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     name: "trash",
   };
 
+  const apple: Prop & Edible = {
+    id: "apple",
+    name: "apple",
+
+    canBeEatenBy({eater}: {eater: Character}) {
+      return true;
+    },
+
+    beEatenBy({eater}: {eater: Character}) {
+      eater.inform("No!  I refuse to be destroyed");
+    },
+  };
+
   engine.addProp(trash01);
   engine.addProp(trash02);
+  engine.addProp(apple);
 
   townSquare.propIDs.push(trash01.id);
+  generalStore.propIDs.push(apple.id);
   tavern.propIDs.push(trash02.id);
 }
-

@@ -9,6 +9,20 @@ import { ParsingContext, withParsingContext } from "../Parser";
 // TODO: We'll prolly want to extract this
 type Target = string;
 
+
+export interface Edible {
+  canBeEatenBy({eater}: {eater: Character}): boolean,
+  beEatenBy({eater}: {eater: Character}): void,
+}
+
+function isEdible(thing: any): thing is Edible {
+  return (
+    typeof(thing.canBeEatenBy) === 'function' &&
+    typeof(thing.beEatenBy) === 'function'
+  );
+}
+
+
 export interface EatCommand extends Command {
   name: "eat",
   target: Target,
@@ -99,7 +113,18 @@ export async function eat({engine, sender, target}: {engine: GameEngine, sender:
   const props = resolveProps({engine, sender, target});
 
   for(const p of props) {
-    return sender.inform(`You eat the ${p.name}`);
+    if(isEdible(p)) {
+      if(p.canBeEatenBy({eater: sender})) {
+        sender.inform(`You eat the ${p.name}`);
+        p.beEatenBy({eater: sender});
+      } else {
+        sender.inform(`Magic or something prevented you from eating it`);
+      }
+    } else {
+      sender.inform(`The ${p.name} does not appear to be edible`);
+    }
+
+    return;
   }
 
   sender.inform(`You don't see any ${target}`);
