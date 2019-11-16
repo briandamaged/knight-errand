@@ -121,7 +121,7 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     },
 
     beEatenBy({eater}: {eater: Character}) {
-      eater.inform("No!  I refuse to be destroyed");
+      eater.inform("Tasty!");
     },
   };
 

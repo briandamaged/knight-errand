@@ -1,5 +1,5 @@
 import {
-  Command, Character, Prop, Location, CommandContext,
+  Command, Character, Prop, Location, CommandContext, PropContainer,
 } from "../models";
 
 import GameEngine from "../GameEngine";
@@ -58,26 +58,38 @@ function* chain<OUTPUT>(iterables: Iterable<Iterable<OUTPUT>>): Iterable<OUTPUT>
 }
 
 // TODO: Extract this
-function* resolvePropSources({engine, sender}: {engine: GameEngine, sender: Character}): Iterable<Iterable<Prop>> {
-  // Check for props in the sender's possession first
-  yield engine.getProps(sender.itemIDs);
+function* resolvePropSources({engine, sender}: {engine: GameEngine, sender: Character}): Iterable<PropContainer> {
+  yield sender;
 
   const location = engine.getLocation(sender.currentLocationID);
   if(location) {
-    // Afterwards, check props that are in the current location
-    yield engine.getProps(location.propIDs);
+    yield location;
   }
 }
 
+
+interface ContainedProp {
+  container: PropContainer;
+  prop: Prop;
+}
+
 // TODO: Extract this
-function* resolveProps({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}): Iterable<Prop> {
+function* resolveProps({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}): Iterable<ContainedProp> {
   const sources = resolvePropSources({engine, sender});
 
-  for(const p of chain(sources)) {
-    if(p.name === target) {
-      yield p;
+  for(const s of sources) {
+    const props = engine.getProps(s.propIDs);
+
+    for(const p of props) {
+      if(p.name === target) {
+        yield {
+          container: s,
+          prop: p,
+        };
+      }
     }
   }
+
 }
 
 
@@ -112,16 +124,20 @@ export const resolveConsumableCommands = Chain([
 export async function eat({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}) {
   const props = resolveProps({engine, sender, target});
 
-  for(const p of props) {
-    if(isEdible(p)) {
-      if(p.canBeEatenBy({eater: sender})) {
-        sender.inform(`You eat the ${p.name}`);
-        p.beEatenBy({eater: sender});
+  for(const {container, prop} of props) {
+    if(isEdible(prop)) {
+      if(prop.canBeEatenBy({eater: sender})) {
+        sender.inform(`You eat the ${prop.name}`);
+        prop.beEatenBy({eater: sender});
+
+        // Remove the Prop from the container
+        container.propIDs = container.propIDs.filter((id)=> id !== prop.id);
+        delete engine.propMap[prop.id];
       } else {
         sender.inform(`Magic or something prevented you from eating it`);
       }
     } else {
-      sender.inform(`The ${p.name} does not appear to be edible`);
+      sender.inform(`The ${prop.name} does not appear to be edible`);
     }
 
     return;

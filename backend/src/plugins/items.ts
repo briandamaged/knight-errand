@@ -84,7 +84,7 @@ export function get({engine, sender, target}: {engine: GameEngine, sender: Chara
       location.propIDs = location.propIDs.filter((id)=> id !== p.id);
 
       // Place the item into the the sender's inventory
-      sender.itemIDs.push(p.id);
+      sender.propIDs.push(p.id);
 
       sender.inform(`You pick up the ${p.name}`);
     }
@@ -94,14 +94,14 @@ export function get({engine, sender, target}: {engine: GameEngine, sender: Chara
 
 
 function drop({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
-  const items = engine.getProps(sender.itemIDs);
+  const items = engine.getProps(sender.propIDs);
 
   const item = items.find((it)=> it.name === target);
   if(item) {
     const location = engine.getLocation(sender.currentLocationID);
 
     if(location) {
-      sender.itemIDs = sender.itemIDs.filter((id)=> id !== item.id);
+      sender.propIDs = sender.propIDs.filter((id)=> id !== item.id);
       location.propIDs.push(item.id);
       sender.inform(`You drop the ${item.name}`);
     } else {
@@ -115,7 +115,7 @@ function drop({engine, sender, target}: {engine: GameEngine, sender: Character, 
 
 
 function items({engine, sender}: {engine: GameEngine, sender: Character}) {
-  const items = engine.getProps(sender.itemIDs);
+  const items = engine.getProps(sender.propIDs);
   if(items.length === 0) {
     sender.inform("You are not carrying anything");
   } else {

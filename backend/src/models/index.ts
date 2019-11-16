@@ -19,17 +19,17 @@ export interface CommandHandler<CMD extends Command> {
 export type Direction = string;
 
 
-export class Character extends EventEmitter {
+export class Character extends EventEmitter implements PropContainer {
   currentLocationID: string;
   autolook: boolean;
-  itemIDs: PropID[];
+  propIDs: PropID[];
 
   constructor({currentLocationID}: {currentLocationID: LocationID}) {
     super();
 
     this.currentLocationID = currentLocationID;
     this.autolook = true;
-    this.itemIDs = [];
+    this.propIDs = [];
   }
 
   inform(message: string) {
@@ -44,7 +44,7 @@ export class Character extends EventEmitter {
 
 export type LocationID = string;
 
-export interface Location {
+export interface Location extends PropContainer {
   id: LocationID,
   name: string,
 
@@ -63,4 +63,9 @@ export type PropID = string;
 export interface Prop {
   id: PropID,
   name: string,
+}
+
+
+export interface PropContainer {
+  propIDs: PropID[];
 }
