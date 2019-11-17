@@ -19,17 +19,30 @@ export interface CommandHandler<CMD extends Command> {
 export type Direction = string;
 
 
-export class Character extends EventEmitter implements PropContainer {
+export interface ICharacter {
+  getProps(): Promise<Iterable<Prop>>;
+
+  inform(message: string): void;
+  entered(location: Location): void;
+}
+
+export class Character extends EventEmitter implements PropContainer, ICharacter {
   currentLocationID: string;
   autolook: boolean;
   propIDs: PropID[];
+  engine: GameEngine;
 
-  constructor({currentLocationID}: {currentLocationID: LocationID}) {
+  constructor({engine, currentLocationID}: {engine: GameEngine, currentLocationID: LocationID}) {
     super();
 
     this.currentLocationID = currentLocationID;
     this.autolook = true;
     this.propIDs = [];
+    this.engine = engine;
+  }
+
+  async getProps() {
+    return this.engine.getProps(this.propIDs);
   }
 
   inform(message: string) {
@@ -44,7 +57,7 @@ export class Character extends EventEmitter implements PropContainer {
 
 export type LocationID = string;
 
-export interface Location extends PropContainer {
+export interface ILocation extends PropContainer {
   id: LocationID,
   name: string,
 
@@ -57,6 +70,38 @@ export interface Location extends PropContainer {
   },
 }
 
+export class Location extends EventEmitter implements ILocation {
+  id: LocationID;
+  name: string;
+  description: string;
+  engine: GameEngine;
+
+  propIDs: PropID[];
+  exits: {
+    [key: string]: LocationID | undefined;
+  }
+
+  constructor({id, name, description, engine}: {id: LocationID, name: string, description: string, engine: GameEngine}) {
+    super();
+    this.id = id;
+    this.name = name;
+    this.description = description;
+    this.engine = engine;
+    this.propIDs = [];
+
+    this.exits = Object.create(null);
+  }
+
+  getDescription() {
+    return this.description;
+  }
+
+  async getProps() {
+    return this.engine.getProps(this.propIDs);
+  }
+
+}
+
 
 export type PropID = string;
 
@@ -67,5 +112,5 @@ export interface Prop {
 
 
 export interface PropContainer {
-  propIDs: PropID[];
+  getProps(): Promise<Iterable<Prop>>;
 }

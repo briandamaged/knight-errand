@@ -74,11 +74,11 @@ interface ContainedProp {
 }
 
 // TODO: Extract this
-function* resolveProps({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}): Iterable<ContainedProp> {
+async function* resolveProps({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}): AsyncIterable<ContainedProp> {
   const sources = resolvePropSources({engine, sender});
 
   for(const s of sources) {
-    const props = engine.getProps(s.propIDs);
+    const props = await s.getProps();
 
     for(const p of props) {
       if(p.name === target) {
@@ -124,15 +124,15 @@ export const resolveConsumableCommands = Chain([
 export async function eat({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}) {
   const props = resolveProps({engine, sender, target});
 
-  for(const {container, prop} of props) {
+  for await (const {container, prop} of props) {
     if(isEdible(prop)) {
       if(prop.canBeEatenBy({eater: sender})) {
         sender.inform(`You eat the ${prop.name}`);
         prop.beEatenBy({eater: sender});
 
         // Remove the Prop from the container
-        container.propIDs = container.propIDs.filter((id)=> id !== prop.id);
-        delete engine.propMap[prop.id];
+        // container.propIDs = container.propIDs.filter((id)=> id !== prop.id);
+        // delete engine.propMap[prop.id];
       } else {
         sender.inform(`Magic or something prevented you from eating it`);
       }
@@ -148,13 +148,14 @@ export async function eat({engine, sender, target}: {engine: GameEngine, sender:
 
 
 export async function drink({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}) {
-  const props = resolveProps({engine, sender, target});
+  // const props = resolveProps({engine, sender, target});
 
-  for(const p of props) {
-    return sender.inform(`You drink the ${p.name}`);
-  }
+  // for await (const p of props) {
+  //   return sender.inform(`You drink the ${p.name}`);
+  // }
 
-  sender.inform(`You don't see any ${target}`);
+  // sender.inform(`You don't see any ${target}`);
+  sender.inform("Glug glug glug");
 }
 
 

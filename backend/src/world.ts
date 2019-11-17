@@ -14,77 +14,57 @@ import { Edible } from './plugins/consumables';
 
 
 export function createWorld({engine}: {engine: GameEngine}): void {
-
-  const townSquare: Location = {
+  const townSquare = new Location({
     id: "townSquare",
     name: "Town Square",
 
-    getDescription() {
-      return "It's more of a Village Oval, if we're being perfectly honest.";
-    },
-
-    propIDs: [],
-    exits: {},
-  };
+    description: "It's more of a Village Oval, if we're being perfectly honest.",
+    engine: engine,
+  });
 
   engine.addLocation(townSquare);
 
 
-  const tavern: Location = {
+  const tavern = new Location({
     id: "tavern",
     name: "The Party Yawn Tavern and Inn",
 
-    getDescription() {
-      return "The sign on the door says 'The Party Yawn'";
-    },
-
-    propIDs: [],
-    exits: {},
-  };
+    description: "The sign on the door says 'The Party Yawn'",
+    engine: engine,
+  });
 
   engine.addLocation(tavern);
 
 
-  const church: Location = {
+  const church = new Location({
     id: "church",
     name: "The Church of St. God",
 
-    getDescription() {
-      return "You are inside a church.  Everybody looks really prayerful.";
-    },
+    description: "You are inside a church.  Everybody looks really prayerful.",
 
-    propIDs: [],
-    exits: {},
-  };
+    engine: engine,
+  });
 
   engine.addLocation(church);
 
 
-  const generalStore: Location = {
+  const generalStore = new Location({
     id: "generalStore",
     name: "The General Store",
 
-    getDescription() {
-      return "You are in a general store.  Believe it or not, you cannot purchase generals here.  Only things.";
-    },
-
-    propIDs: [],
-    exits: {},
-  };
+    description: "You are in a general store.  Believe it or not, you cannot purchase generals here.  Only things.",
+    engine: engine,
+  });
 
   engine.addLocation(generalStore);
 
-  const blacksmith: Location = {
+  const blacksmith = new Location({
     id: "blacksmith",
     name: "The Blacksmith",
 
-    getDescription() {
-      return "This is a blacksmith.  You can buy swords and stuff here, or something.";
-    },
-
-    propIDs: [],
-    exits: {},
-  }
+    description: "This is a blacksmith.  You can buy swords and stuff here, or something.",
+    engine: engine,
+  });
 
   engine.addLocation(blacksmith);
 
