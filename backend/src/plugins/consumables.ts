@@ -148,13 +148,7 @@ export async function eat({engine, sender, target}: {engine: GameEngine, sender:
 
 
 export async function drink({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}) {
-  const props = resolveProps({engine, sender, target});
-
-  for(const p of props) {
-    return sender.inform(`You drink the ${p.name}`);
-  }
-
-  sender.inform(`You don't see any ${target}`);
+  sender.inform("Glug glug glug...");
 }
 
 
