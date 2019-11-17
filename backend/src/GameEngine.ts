@@ -92,3 +92,111 @@ export default class GameEngine extends EventEmitter {
 
 
 }
+
+
+
+
+interface EngineAware {
+  getEngine(): FakeGameEngine;
+}
+
+
+interface FakeLocation {
+  id: LocationID;
+  getProps(): Promise<Iterable<Prop>>;
+}
+
+interface Describable {
+  getDescription(): string;
+}
+
+
+function createGetDescription(params: Record<string, any>) {
+  if(typeof(params.getDescription) === 'function') {
+    return params.getDescription;
+  }
+
+  const description = (
+    (typeof(params.description) === 'string')
+      ? params.description
+      : "It looks about the way you'd expect"
+  );
+
+  return function getDescription() {
+    return description;
+  }
+}
+
+function injectDescription<T>(location: T, params: Record<string, any>): T & Describable {
+
+  const retval = Object.assign(location, {
+    getDescription: createGetDescription(params),
+  });
+
+  return retval;
+}
+
+const DescriptionInjector = (
+  (params: Record<string, any>)=>
+    <T>(location: T)=>
+      injectDescription(location, params)
+);
+
+
+
+const LocationIDInjector = (
+  (params: Record<string, any>)=>
+    function injectLocationID<T>(location: T): T & {id: LocationID} {
+      const id = (
+        (typeof(params.id) === 'undefined')
+          ? `${Math.random()}`
+          : params.id
+      );
+
+      return Object.assign(location, {id: id});
+    }
+)
+
+
+
+
+
+
+
+class FakeGameEngine {
+  createLocation(params: Record<string, any>): EngineAware & FakeLocation {
+    const engine = this;
+    const location = {
+      getEngine() {
+        return engine;
+      },
+
+      async getProps() {
+        return [];
+      }
+    }
+
+    const injectLocationID = LocationIDInjector(params);
+    const injectDescription = DescriptionInjector(params);
+
+    return injectLocationID(injectDescription(location));
+  }
+
+}
+
+
+const fakeEngine = new FakeGameEngine();
+
+
+const foo = fakeEngine.createLocation({
+  id: "foo.id",
+  getDescription() {
+    return this.id;
+  }
+});
+
+
+const bar: any = foo;
+
+console.log(bar.getDescription());
+
