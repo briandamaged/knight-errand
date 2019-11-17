@@ -59,6 +59,23 @@ export default class GameEngine extends EventEmitter {
   }
 
 
+  createLocation(params: Record<string, any>): Location {
+    const description = (params.description || "It looks about the way you'd expect");
+
+    const location = {
+      id: (params.id || `${Math.random()}`),
+      name: (params.name || "unnamed"),
+      getDescription() {
+        return description;
+      },
+
+      propIDs: [],
+      exits: Object.create(null),
+    };
+
+    this.addLocation(location);
+    return location;
+  }
 
   addLocation(location: Location) {
     this.locationMap[location.id] = location;

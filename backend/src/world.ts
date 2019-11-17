@@ -15,78 +15,37 @@ import { Edible } from './plugins/consumables';
 
 export function createWorld({engine}: {engine: GameEngine}): void {
 
-  const townSquare: Location = {
+  const townSquare = engine.createLocation({
     id: "townSquare",
     name: "Town Square",
 
-    getDescription() {
-      return "It's more of a Village Oval, if we're being perfectly honest.";
-    },
-
-    propIDs: [],
-    exits: {},
-  };
-
-  engine.addLocation(townSquare);
+    description: "It's more of a Village Oval, if we're being perfectly honest.",
+  });
 
 
-  const tavern: Location = {
-    id: "tavern",
+  const tavern = engine.createLocation({
     name: "The Party Yawn Tavern and Inn",
-
-    getDescription() {
-      return "The sign on the door says 'The Party Yawn'";
-    },
-
-    propIDs: [],
-    exits: {},
-  };
-
-  engine.addLocation(tavern);
+    description: "The sign on the door says 'The Party Yawn'",
+  });
 
 
-  const church: Location = {
-    id: "church",
+  const church = engine.createLocation({
     name: "The Church of St. God",
-
-    getDescription() {
-      return "You are inside a church.  Everybody looks really prayerful.";
-    },
-
-    propIDs: [],
-    exits: {},
-  };
-
-  engine.addLocation(church);
+    description: "You are inside a church.  Everybody looks really prayerful.",
+  });
 
 
-  const generalStore: Location = {
-    id: "generalStore",
+  const generalStore = engine.createLocation({
     name: "The General Store",
+    description: "You are in a general store.  Believe it or not, you cannot purchase generals here.  Only things.",
+  });
 
-    getDescription() {
-      return "You are in a general store.  Believe it or not, you cannot purchase generals here.  Only things.";
-    },
-
-    propIDs: [],
-    exits: {},
-  };
-
-  engine.addLocation(generalStore);
-
-  const blacksmith: Location = {
-    id: "blacksmith",
+  const blacksmith =  engine.createLocation({
     name: "The Blacksmith",
+    description: "This is a blacksmith.  You can buy swords and stuff here, or something.",
+  });
 
-    getDescription() {
-      return "This is a blacksmith.  You can buy swords and stuff here, or something.";
-    },
 
-    propIDs: [],
-    exits: {},
-  }
-
-  engine.addLocation(blacksmith);
 
   townSquare.exits.north = tavern.id;
   tavern.exits.south = townSquare.id;
