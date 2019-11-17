@@ -19,7 +19,9 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     id: "townSquare",
     name: "Town Square",
 
-    description: "It's more of a Village Oval, if we're being perfectly honest.",
+    getDescription() {
+      return "It's more of a Village Oval, if we're being perfectly honest.";
+    }
   });
 
 

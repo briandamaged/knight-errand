@@ -8,6 +8,46 @@ import { Resolver, DepthFirstResolver } from 'conditional-love';
 
 
 
+function injectLocationID<T>(location: T, _id?: LocationID) {
+  const id = _id || `${Math.random()}`
+  return Object.assign(location, {id});
+}
+
+const LocationIDInjector = (
+  (params: Record<string, any>)=>
+    <T>(location: T)=>
+      injectLocationID(location, params.id)
+);
+
+
+function createGetDescription(params: Record<string, any>) {
+  if(typeof(params.getDescription) === 'function') {
+    return params.getDescription;
+  } else {
+    const description = (
+      (typeof(params.description) === 'string')
+        ? params.description
+        : "It looks about the way you'd expect"
+    );
+
+    return function getDescription() {
+      return description;
+    }
+  }
+}
+
+function injectDescription<T>(location: T, params: Record<string, any>) {
+  const getDescription = createGetDescription(params);
+  return Object.assign(location, {getDescription});
+}
+
+const DescriptionInjector = (
+  (params: Record<string, any>)=>
+    <T>(location: T)=>
+      injectDescription(location, params)
+);
+
+
 export default class GameEngine extends EventEmitter {
   locationMap: Record<LocationID, Location>;
   propMap: Record<PropID, Prop>;
@@ -60,18 +100,16 @@ export default class GameEngine extends EventEmitter {
 
 
   createLocation(params: Record<string, any>): Location {
-    const description = (params.description || "It looks about the way you'd expect");
-
-    const location = {
-      id: (params.id || `${Math.random()}`),
+    const _location = {
       name: (params.name || "unnamed"),
-      getDescription() {
-        return description;
-      },
 
       propIDs: [],
       exits: Object.create(null),
     };
+
+    const injectLocationID = LocationIDInjector(params);
+    const injectDescription = DescriptionInjector(params);
+    const location = injectDescription(injectLocationID(_location));
 
     this.addLocation(location);
     return location;
