@@ -145,7 +145,7 @@ export default class GameEngine extends EventEmitter {
     }
   }
 
-  getProps(ids: PropID[]): Prop[] {
+  async getProps(ids: PropID[]): Promise<Prop[]> {
     return (
       ids
         .map((id)=> this.getProp(id))

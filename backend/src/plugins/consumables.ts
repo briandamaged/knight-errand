@@ -74,11 +74,11 @@ interface ContainedProp {
 }
 
 // TODO: Extract this
-function* resolveProps({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}): Iterable<ContainedProp> {
+async function* resolveProps({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}): AsyncIterable<ContainedProp> {
   const sources = resolvePropSources({engine, sender});
 
   for(const s of sources) {
-    const props = engine.getProps(s.propIDs);
+    const props = await engine.getProps(s.propIDs);
 
     for(const p of props) {
       if(p.name === target) {
@@ -124,7 +124,7 @@ export const resolveConsumableCommands = Chain([
 export async function eat({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}) {
   const props = resolveProps({engine, sender, target});
 
-  for(const {container, prop} of props) {
+  for await(const {container, prop} of props) {
     if(isEdible(prop)) {
       if(prop.canBeEatenBy({eater: sender})) {
         sender.inform(`You eat the ${prop.name}`);

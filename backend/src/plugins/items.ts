@@ -73,10 +73,10 @@ export const resolveInventoryCommands = Chain([
 ]);
 
 
-export function get({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
+export async function get({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
   const location = engine.getLocation(sender.currentLocationID);
   if(location) {
-    const props = engine.getProps(location.propIDs);
+    const props = await engine.getProps(location.propIDs);
 
     const p = props.find((pp)=> pp.name === target);
     if(p) {
@@ -93,8 +93,8 @@ export function get({engine, sender, target}: {engine: GameEngine, sender: Chara
 
 
 
-function drop({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
-  const items = engine.getProps(sender.propIDs);
+export async function drop({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
+  const items = await engine.getProps(sender.propIDs);
 
   const item = items.find((it)=> it.name === target);
   if(item) {
@@ -114,8 +114,8 @@ function drop({engine, sender, target}: {engine: GameEngine, sender: Character, 
 }
 
 
-function items({engine, sender}: {engine: GameEngine, sender: Character}) {
-  const items = engine.getProps(sender.propIDs);
+export async function items({engine, sender}: {engine: GameEngine, sender: Character}) {
+  const items = await engine.getProps(sender.propIDs);
   if(items.length === 0) {
     sender.inform("You are not carrying anything");
   } else {
