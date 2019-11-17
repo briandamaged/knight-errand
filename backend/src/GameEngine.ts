@@ -99,7 +99,7 @@ export default class GameEngine extends EventEmitter {
   }
 
 
-  createLocation(params: Record<string, any>): Location {
+  _createLocation(params: Record<string, any>): Location {
     const _location = {
       name: (params.name || "unnamed"),
 
@@ -107,10 +107,18 @@ export default class GameEngine extends EventEmitter {
       exits: Object.create(null),
     };
 
+    // TODO: Create a composition of Injector functions
     const injectLocationID = LocationIDInjector(params);
     const injectDescription = DescriptionInjector(params);
+
+    // TODO: Apply the composition of Injector functions to _location
     const location = injectDescription(injectLocationID(_location));
 
+    return location;
+  }
+
+  createLocation(params: Record<string, any>) {
+    const location = this._createLocation(params);
     this.addLocation(location);
     return location;
   }
