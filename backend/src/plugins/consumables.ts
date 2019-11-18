@@ -58,10 +58,10 @@ function* chain<OUTPUT>(iterables: Iterable<Iterable<OUTPUT>>): Iterable<OUTPUT>
 }
 
 // TODO: Extract this
-function* resolvePropSources({engine, sender}: {engine: GameEngine, sender: Character}): Iterable<PropContainer> {
+async function* resolvePropSources({sender}: {sender: Character}): AsyncIterable<PropContainer> {
   yield sender;
 
-  const location = engine.getLocation(sender.currentLocationID);
+  const location = await sender.getCurrentLocation();
   if(location) {
     yield location;
   }
@@ -74,10 +74,10 @@ interface ContainedProp {
 }
 
 // TODO: Extract this
-async function* resolveProps({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}): AsyncIterable<ContainedProp> {
-  const sources = resolvePropSources({engine, sender});
+async function* resolveProps({sender, target}: {sender: Character, target: Target}): AsyncIterable<ContainedProp> {
+  const sources = resolvePropSources({sender});
 
-  for(const s of sources) {
+  for await(const s of sources) {
     const props = await s.getProps();
 
     for(const p of props) {
@@ -95,7 +95,6 @@ async function* resolveProps({engine, sender, target}: {engine: GameEngine, send
 
 export const handleEatCommand = Validate(isEatCommand)(function(ctx: CommandContext<EatCommand>) {
   eat({
-    engine: ctx.engine,
     sender: ctx.sender,
     target: ctx.command.target,
   });
@@ -103,7 +102,6 @@ export const handleEatCommand = Validate(isEatCommand)(function(ctx: CommandCont
 
 export const handleDrinkCommand = Validate(isDrinkCommand)(function(ctx: CommandContext<DrinkCommand>) {
   drink({
-    engine: ctx.engine,
     sender: ctx.sender,
     target: ctx.command.target,
   });
@@ -121,8 +119,8 @@ export const resolveConsumableCommands = Chain([
 ]);
 
 
-export async function eat({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}) {
-  const props = resolveProps({engine, sender, target});
+export async function eat({sender, target}: {sender: Character, target: Target}) {
+  const props = resolveProps({sender, target});
 
   for await(const {container, prop} of props) {
     if(isEdible(prop)) {
@@ -147,7 +145,7 @@ export async function eat({engine, sender, target}: {engine: GameEngine, sender:
 }
 
 
-export async function drink({engine, sender, target}: {engine: GameEngine, sender: Character, target: Target}) {
+export async function drink({sender, target}: {sender: Character, target: Target}) {
   sender.inform("Glug glug glug...");
 }
 

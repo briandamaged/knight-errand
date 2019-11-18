@@ -38,6 +38,11 @@ export class Character extends EventEmitter implements PropContainer {
     this.engine = engine;
   }
 
+  // TODO: Maybe this should be a Resolver?
+  async getCurrentLocation(): Promise<Location | undefined> {
+    return this.engine.getLocation(this.currentLocationID);
+  }
+
   async getProps(): Promise<Prop[]> {
     return this.engine.getProps(this.propIDs);
   }
