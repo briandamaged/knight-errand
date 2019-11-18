@@ -19,17 +19,27 @@ export interface CommandHandler<CMD extends Command> {
 export type Direction = string;
 
 
+// TODO: Extract an interface so that we're not so tightly coupled
+//       with GameEngine
 export class Character extends EventEmitter implements PropContainer {
   currentLocationID: string;
   autolook: boolean;
   propIDs: PropID[];
 
-  constructor({currentLocationID}: {currentLocationID: LocationID}) {
+  engine: GameEngine;
+
+  constructor({currentLocationID, engine}: {currentLocationID: LocationID, engine: GameEngine}) {
     super();
 
     this.currentLocationID = currentLocationID;
     this.autolook = true;
     this.propIDs = [];
+
+    this.engine = engine;
+  }
+
+  async getProps(): Promise<Prop[]> {
+    return this.engine.getProps(this.propIDs);
   }
 
   inform(message: string) {
@@ -45,16 +55,18 @@ export class Character extends EventEmitter implements PropContainer {
 export type LocationID = string;
 
 export interface Location extends PropContainer {
-  id: LocationID,
-  name: string,
+  id: LocationID;
+  name: string;
 
-  getDescription(): string,
+  getDescription(): string;
 
-  propIDs: PropID[],
+  propIDs: PropID[];
+
+  getProps(): Promise<Prop[]>;
 
   exits: {
     [key: string]: LocationID | undefined,
-  },
+  };
 }
 
 
@@ -67,5 +79,5 @@ export interface Prop {
 
 
 export interface PropContainer {
-  propIDs: PropID[];
+  getProps(): Promise<Prop[]>;
 }

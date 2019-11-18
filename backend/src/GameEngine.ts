@@ -100,10 +100,18 @@ export default class GameEngine extends EventEmitter {
 
 
   _createLocation(params: Record<string, any>): Location {
+    const engine = this;
+
     const _location = {
       name: (params.name || "unnamed"),
 
       propIDs: [],
+
+      // TODO: Consider converting this into an AsyncIterator
+      async getProps(): Promise<Prop[]> {
+        return engine.getProps(this.propIDs);
+      },
+
       exits: Object.create(null),
     };
 
@@ -153,5 +161,14 @@ export default class GameEngine extends EventEmitter {
     ) as Prop[];
   }
 
+
+  createCharacter(params: Record<string, any>): Character {
+    const character =  new Character({
+      currentLocationID: (params.currentLocationID || "townSquare"),
+      engine: this,
+    });
+
+    return character;
+  }
 
 }

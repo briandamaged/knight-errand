@@ -48,7 +48,7 @@ engine.install(resolveConsumableCommands);
 wss.on('connection', function connection(ws) {
 
   // FIXME: Ability to instantiate a Character without a currentLocationID
-  const player = new Character({
+  const player = engine.createCharacter({
     currentLocationID: "townSquare",
   });
 

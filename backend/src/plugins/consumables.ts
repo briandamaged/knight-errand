@@ -78,7 +78,7 @@ async function* resolveProps({engine, sender, target}: {engine: GameEngine, send
   const sources = resolvePropSources({engine, sender});
 
   for(const s of sources) {
-    const props = await engine.getProps(s.propIDs);
+    const props = await s.getProps();
 
     for(const p of props) {
       if(p.name === target) {
@@ -131,8 +131,8 @@ export async function eat({engine, sender, target}: {engine: GameEngine, sender:
         prop.beEatenBy({eater: sender});
 
         // Remove the Prop from the container
-        container.propIDs = container.propIDs.filter((id)=> id !== prop.id);
-        delete engine.propMap[prop.id];
+        // container.propIDs = container.propIDs.filter((id)=> id !== prop.id);
+        // delete engine.propMap[prop.id];
       } else {
         sender.inform(`Magic or something prevented you from eating it`);
       }
