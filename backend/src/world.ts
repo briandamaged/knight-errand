@@ -1,10 +1,11 @@
 
 import {
-  Location, Prop, Character,
+  Location, Character,
 } from './models';
 
 import GameEngine from './GameEngine';
 import { Edible } from './plugins/consumables';
+import { Prop } from './models/Prop';
 
 // Town Hall
 // Church

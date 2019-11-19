@@ -1,11 +1,14 @@
 
 import {
-  Location, Character, LocationID, Prop, PropID, CommandContext, Command, CommandHandler,
+  Location, Character, CommandContext, Command, CommandHandler,
 } from './models';
+
+import { LocationID } from './models/Location';
+
 
 import EventEmitter from 'events';
 import { Resolver, DepthFirstResolver } from 'conditional-love';
-
+import { PropID, Prop } from './models/Prop';
 
 
 function injectLocationID<T>(location: T, _id?: LocationID) {

@@ -1,6 +1,11 @@
 
 import { EventEmitter } from "events";
 import GameEngine from "../GameEngine";
+import { LocationID } from "./Location";
+
+import {
+  Prop, PropID
+} from './Prop';
 
 export interface CommandContext<CMD extends Command = Command> {
   sender: Character;
@@ -56,9 +61,6 @@ export class Character extends EventEmitter implements PropContainer {
   }
 }
 
-
-export type LocationID = string;
-
 export interface Location extends PropContainer {
   id: LocationID;
   name: string;
@@ -72,14 +74,6 @@ export interface Location extends PropContainer {
   exits: {
     [key: string]: LocationID | undefined,
   };
-}
-
-
-export type PropID = string;
-
-export interface Prop {
-  id: PropID,
-  name: string,
 }
 
 

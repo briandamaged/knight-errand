@@ -1,7 +1,11 @@
 import GameEngine from "../GameEngine";
 import {
-  CommandContext, Command, Character, Direction, LocationID, CommandHandler
+  CommandContext, Command, Character, Direction, CommandHandler
 } from "../models";
+
+import {
+  LocationID
+} from '../models/Location';
 
 import { DepthFirstResolver } from "conditional-love";
 import { WhenNameIs, Chain, Validate, AS } from "./utils";
