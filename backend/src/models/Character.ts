@@ -3,10 +3,23 @@ import { PropContainer, PropID, Prop } from "./Prop";
 import GameEngine from "../GameEngine";
 import { Location, LocationID } from "./Location";
 
+
+export interface Character extends EventEmitter, PropContainer {
+  getCurrentLocation(): Promise<Location | undefined>;
+  inform(message: string): void;
+  entered(location: Location): void;
+
+  // TODO: Remove these
+  propIDs: PropID[];
+  currentLocationID: LocationID;
+  autolook: boolean;
+}
+
+
 // TODO: Extract an interface so that we're not so tightly coupled
 //       with GameEngine
-export class Character extends EventEmitter implements PropContainer {
-  currentLocationID: string;
+export class EngineCharacter extends EventEmitter implements Character, PropContainer {
+  currentLocationID: LocationID;
   autolook: boolean;
   propIDs: PropID[];
 

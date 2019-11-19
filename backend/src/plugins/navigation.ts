@@ -68,8 +68,8 @@ export const resolveNavigation = Chain([
 ]);
 
 
-export function go({engine, sender, direction}: {engine: GameEngine, sender: Character, direction: Direction}) {
-  const location = engine.getLocation(sender.currentLocationID);
+export async function go({engine, sender, direction}: {engine: GameEngine, sender: Character, direction: Direction}) {
+  const location = await sender.getCurrentLocation();
 
   if(location) {
     const destinationID = location.exits[direction];

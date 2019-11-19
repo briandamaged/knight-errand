@@ -74,7 +74,8 @@ export const resolveInventoryCommands = Chain([
 
 
 export async function get({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
-  const location = engine.getLocation(sender.currentLocationID);
+  const location = await sender.getCurrentLocation();
+
   if(location) {
     const props = await engine.getProps(location.propIDs);
 
@@ -98,7 +99,7 @@ export async function drop({engine, sender, target}: {engine: GameEngine, sender
 
   const item = items.find((it)=> it.name === target);
   if(item) {
-    const location = engine.getLocation(sender.currentLocationID);
+    const location = await sender.getCurrentLocation();
 
     if(location) {
       sender.propIDs = sender.propIDs.filter((id)=> id !== item.id);

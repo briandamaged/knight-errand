@@ -9,7 +9,7 @@ import { Location, LocationID } from './models/Location';
 import EventEmitter from 'events';
 import { Resolver, DepthFirstResolver } from 'conditional-love';
 import { PropID, Prop } from './models/Prop';
-import { Character } from './models/Character';
+import { EngineCharacter, Character } from './models/Character';
 
 
 function injectLocationID<T>(location: T, _id?: LocationID) {
@@ -167,7 +167,7 @@ export default class GameEngine extends EventEmitter {
 
 
   createCharacter(params: Record<string, any>): Character {
-    const character =  new Character({
+    const character =  new EngineCharacter({
       currentLocationID: (params.currentLocationID || "townSquare"),
       engine: this,
     });

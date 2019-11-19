@@ -54,7 +54,7 @@ export const resolveDescriptionCommands = Chain([
 
 
 export async function look({engine, sender}: {engine: GameEngine, sender: Character}) {
-  const location = engine.getLocation(sender.currentLocationID);
+  const location = await sender.getCurrentLocation();
   if(location) {
     const items = await engine.getProps(location.propIDs);
 
