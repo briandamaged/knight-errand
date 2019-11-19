@@ -1,6 +1,6 @@
 import GameEngine from "../GameEngine";
 import {
-  CommandContext, Command, Character, Direction, CommandHandler
+  CommandContext, Command, Direction, CommandHandler
 } from "../models";
 
 import {
@@ -10,6 +10,7 @@ import {
 import { DepthFirstResolver } from "conditional-love";
 import { WhenNameIs, Chain, Validate, AS } from "./utils";
 import { ParsingContext, withParsingContext } from "../Parser";
+import { Character } from "../models/Character";
 
 
 

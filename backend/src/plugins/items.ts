@@ -1,8 +1,9 @@
 
-import { Command, CommandContext, CommandHandler, Character } from "../models";
+import { Command, CommandContext, CommandHandler } from "../models";
 import { WhenNameIs, Validate, Chain, AS } from "./utils";
 import GameEngine from "../GameEngine";
 import { ParsingContext, withParsingContext } from "../Parser";
+import { Character } from "../models/Character";
 
 export interface GetCommand extends Command {
   name: "get";

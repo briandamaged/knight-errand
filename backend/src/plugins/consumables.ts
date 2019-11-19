@@ -1,11 +1,12 @@
 import {
-  Command, Character, CommandContext,
+  Command, CommandContext,
 } from "../models";
 
 import GameEngine from "../GameEngine";
 import { Validate, WhenNameIs, AS, Chain } from "./utils";
 import { ParsingContext, withParsingContext } from "../Parser";
 import { Prop, PropContainer } from "../models/Prop";
+import { Character } from "../models/Character";
 
 // TODO: We'll prolly want to extract this
 type Target = string;

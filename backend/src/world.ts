@@ -1,7 +1,7 @@
 
 import {
   Character,
-} from './models';
+} from './models/Character';
 
 import GameEngine from './GameEngine';
 import { Edible } from './plugins/consumables';

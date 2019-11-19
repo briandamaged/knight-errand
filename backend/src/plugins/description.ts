@@ -1,9 +1,10 @@
 
-import { Command, Character, CommandContext, CommandHandler } from "../models";
+import { Command, CommandContext, CommandHandler } from "../models";
 import GameEngine from "../GameEngine";
 import { Validate, WhenNameIs, Chain, AS } from "./utils";
 import { DepthFirstResolver } from "conditional-love";
 import { ParsingContext, withParsingContext, isEnabledWord, isDisabledWord } from "../Parser";
+import { Character } from "../models/Character";
 
 export interface LookCommand extends Command {
   name: "look",

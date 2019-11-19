@@ -8,7 +8,7 @@ import {
 } from './world';
 
 import {
-  Command, Character, CommandContext,
+  Command, CommandContext,
 } from './models';
 
 import { resolveNavigation, resolveNavigationInstructions } from './plugins/navigation';
@@ -17,6 +17,7 @@ import { resolveDescriptionCommands, resolveDescriptionInstructions } from './pl
 import { resolveInterpretCommand } from './plugins/interpreter';
 import { Chain } from './plugins/utils';
 import { resolveConsumableInstructions, resolveConsumableCommands } from './plugins/consumables';
+import { Character } from './models/Character';
 
 
 
@@ -56,7 +57,7 @@ wss.on('connection', function connection(ws) {
     ws.send(message);
   });
 
-  player.on('entered', function(this: Character, location) {
+  player.on('entered', function(this: Character) {
     if(this.autolook) {
       engine.handleCommand({
         sender: player,
