@@ -1,9 +1,9 @@
 
 import {
-  Location, Character, CommandContext, Command, CommandHandler,
+  Character, CommandContext, Command, CommandHandler,
 } from './models';
 
-import { LocationID } from './models/Location';
+import { Location, LocationID } from './models/Location';
 
 
 import EventEmitter from 'events';

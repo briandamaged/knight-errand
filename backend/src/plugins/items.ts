@@ -2,7 +2,6 @@
 import { Command, CommandContext, CommandHandler, Character } from "../models";
 import { WhenNameIs, Validate, Chain, AS } from "./utils";
 import GameEngine from "../GameEngine";
-import { DepthFirstResolver } from "conditional-love";
 import { ParsingContext, withParsingContext } from "../Parser";
 
 export interface GetCommand extends Command {

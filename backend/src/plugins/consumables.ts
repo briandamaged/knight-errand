@@ -1,5 +1,5 @@
 import {
-  Command, Character, Location, CommandContext,
+  Command, Character, CommandContext,
 } from "../models";
 
 import GameEngine from "../GameEngine";

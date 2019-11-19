@@ -4,7 +4,7 @@ import {
 } from "../models";
 
 import {
-  LocationID
+  Location, LocationID
 } from '../models/Location';
 
 import { DepthFirstResolver } from "conditional-love";

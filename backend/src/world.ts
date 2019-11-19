@@ -1,17 +1,11 @@
 
 import {
-  Location, Character,
+  Character,
 } from './models';
 
 import GameEngine from './GameEngine';
 import { Edible } from './plugins/consumables';
 import { Prop } from './models/Prop';
-
-// Town Hall
-// Church
-// Clinic
-// 
-
 
 
 export function createWorld({engine}: {engine: GameEngine}): void {

@@ -1,7 +1,7 @@
 
 import { EventEmitter } from "events";
 import GameEngine from "../GameEngine";
-import { LocationID } from "./Location";
+import { Location, LocationID } from "./Location";
 
 import {
   Prop, PropID, PropContainer
@@ -59,19 +59,4 @@ export class Character extends EventEmitter implements PropContainer {
   entered(location: Location) {
     this.emit('entered', location);
   }
-}
-
-export interface Location extends PropContainer {
-  id: LocationID;
-  name: string;
-
-  getDescription(): string;
-
-  propIDs: PropID[];
-
-  getProps(): Promise<Prop[]>;
-
-  exits: {
-    [key: string]: LocationID | undefined,
-  };
 }
