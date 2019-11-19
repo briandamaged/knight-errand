@@ -4,7 +4,7 @@ import GameEngine from "../GameEngine";
 import { LocationID } from "./Location";
 
 import {
-  Prop, PropID
+  Prop, PropID, PropContainer
 } from './Prop';
 
 export interface CommandContext<CMD extends Command = Command> {
@@ -74,9 +74,4 @@ export interface Location extends PropContainer {
   exits: {
     [key: string]: LocationID | undefined,
   };
-}
-
-
-export interface PropContainer {
-  getProps(): Promise<Prop[]>;
 }
