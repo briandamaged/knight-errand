@@ -56,19 +56,17 @@ export function createWorld({engine}: {engine: GameEngine}): void {
   townSquare.exits.west = blacksmith.id;
   blacksmith.exits.east = townSquare.id;
 
-
-
-  const trash01: Prop = {
+  const trash01 = engine.createProp({
     id: "trash01",
     name: "gawbij",
-  };
+  });
 
-  const trash02: Prop = {
+  const trash02 = engine.createProp({
     id: "trash02",
     name: "trash",
-  };
+  });
 
-  const apple: Prop & Edible = {
+  const apple = engine.createProp({
     id: "apple",
     name: "apple",
 
@@ -79,11 +77,7 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     beEatenBy({eater}: {eater: Character}) {
       eater.inform("Tasty!");
     },
-  };
-
-  engine.addProp(trash01);
-  engine.addProp(trash02);
-  engine.addProp(apple);
+  });
 
   townSquare.propIDs.push(trash01.id);
   generalStore.propIDs.push(apple.id);

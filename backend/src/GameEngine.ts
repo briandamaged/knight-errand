@@ -175,4 +175,20 @@ export default class GameEngine extends EventEmitter {
     return character;
   }
 
+
+  createProp(params: Record<string, any>): Prop {
+    const prop = {
+      id: (params.id || `Math.random()`),
+      name: (params.name || "thing"),
+
+      // FIXME: These should be injected
+      canBeEatenBy: params.canBeEatenBy,
+      beEatenBy: params.beEatenBy,
+    };
+
+
+    this.addProp(prop);
+    return prop;
+  }
+
 }
