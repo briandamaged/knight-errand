@@ -76,7 +76,7 @@ export async function go({engine, sender, direction}: {engine: GameEngine, sende
     if(destinationID) {
       const destination = engine.getLocation(destinationID);
       if(destination) {
-        sender.currentLocationID = destination.id;
+        sender.setCurrentLocation(destination);
         sender.entered(destination);
       } else {
         sender.inform(`Could not load Location with id = ${JSON.stringify(destinationID)}`);
@@ -92,7 +92,7 @@ export async function go({engine, sender, direction}: {engine: GameEngine, sende
 export function teleport({engine, sender, locationID}: {engine: GameEngine, sender: Character, locationID: LocationID}) {
   const location = engine.getLocation(locationID);
   if(location) {
-    sender.currentLocationID = location.id;
+    sender.setCurrentLocation(location);
     sender.entered(location);
   }
 }

@@ -6,12 +6,12 @@ import { Location, LocationID } from "./Location";
 
 export interface Character extends EventEmitter, PropContainer {
   getCurrentLocation(): Promise<Location | undefined>;
+  setCurrentLocation(prop: Prop): Promise<boolean>;
 
   inform(message: string): void;
   entered(location: Location): void;
 
   // TODO: Remove these
-  currentLocationID: LocationID;
   autolook: boolean;
 }
 
@@ -37,6 +37,15 @@ export class EngineCharacter extends EventEmitter implements Character, PropCont
   // TODO: Maybe this should be a Resolver?
   async getCurrentLocation(): Promise<Location | undefined> {
     return this.engine.getLocation(this.currentLocationID);
+  }
+
+  async setCurrentLocation(location: Location) {
+    if(this.currentLocationID !== location.id) {
+      this.currentLocationID = location.id;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   async getProps(): Promise<Prop[]> {
