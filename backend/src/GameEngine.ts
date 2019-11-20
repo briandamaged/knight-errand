@@ -196,16 +196,17 @@ export default class GameEngine extends EventEmitter {
   }
 
 
-  createProp(params: Record<string, any>): Prop {
+  createProp(_params: Record<string, any>): Prop {
     const prop = {
-      id: (params.id || `Math.random()`),
-      name: (params.name || "thing"),
-
-      // FIXME: These should be injected
-      canBeEatenBy: params.canBeEatenBy,
-      beEatenBy: params.beEatenBy,
+      id: (_params.id || `Math.random()`),
+      name: (_params.name || "thing"),
     };
 
+    const params = Object.assign({}, _params);
+    delete params.id;
+    delete params.name;
+
+    Object.assign(prop, params);
 
     this.addProp(prop);
     return prop;

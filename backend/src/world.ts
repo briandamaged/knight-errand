@@ -67,7 +67,6 @@ export async function createWorld({engine}: {engine: GameEngine}): Promise<void>
   });
 
   const apple = engine.createProp({
-    id: "apple",
     name: "apple",
 
     canBeEatenBy({eater}: {eater: Character}) {
@@ -79,7 +78,21 @@ export async function createWorld({engine}: {engine: GameEngine}): Promise<void>
     },
   });
 
+
+  const wine = engine.createProp({
+    name: "wine",
+
+    canBeDrunkBy() {
+      return true;
+    },
+
+    beDrunkBy({drinker}: {drinker: Character}) {
+      drinker.inform("Glug glug glug...");
+    },
+  });
+
   townSquare.addProp(trash01);
+  townSquare.addProp(trash02);
   generalStore.addProp(apple);
-  tavern.addProp(trash02);
+  tavern.addProp(wine);
 }

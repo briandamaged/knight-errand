@@ -17,10 +17,22 @@ export interface Edible {
   beEatenBy({eater}: {eater: Character}): void,
 }
 
+export interface Drinkable {
+  canBeDrunkBy({drinker}: {drinker: Character}): boolean;
+  beDrunkBy({drinker}: {drinker: Character}): boolean;
+}
+
 function isEdible(thing: any): thing is Edible {
   return (
     typeof(thing.canBeEatenBy) === 'function' &&
     typeof(thing.beEatenBy) === 'function'
+  );
+}
+
+function isDrinkable(thing: any): thing is Drinkable {
+  return (
+    typeof(thing.canBeDrunkBy) === 'function' &&
+    typeof(thing.beDrunkBy) === 'function'
   );
 }
 
@@ -149,7 +161,29 @@ export async function eat({sender, target}: {sender: Character, target: Target})
 
 
 export async function drink({sender, target}: {sender: Character, target: Target}) {
-  sender.inform("Glug glug glug...");
+  const props = await resolveProps({sender, target});
+
+  for await(const {container, prop} of props) {
+    if(isDrinkable(prop)) {
+      if(prop.canBeDrunkBy({drinker: sender})) {
+        sender.inform(`You drink the ${prop.name}`);
+        prop.beDrunkBy({drinker: sender});
+
+        container.removeProp(prop);
+
+        // TODO: Remove the prop from the rest of the engine
+        // delete engine.propMap[prop.id];
+      } else {
+        sender.inform(`Magic or something prevented you from drinking it`);
+      }
+    } else {
+      sender.inform(`The ${prop.name} does not appear to be drinkable`);
+    }
+
+    return;
+  }
+
+  sender.inform(`You don't see any ${target}`);
 }
 
 
