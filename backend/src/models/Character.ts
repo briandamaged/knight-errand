@@ -6,18 +6,17 @@ import { Location, LocationID } from "./Location";
 
 export interface Character extends EventEmitter, PropContainer {
   getCurrentLocation(): Promise<Location | undefined>;
+
   inform(message: string): void;
   entered(location: Location): void;
 
   // TODO: Remove these
-  propIDs: PropID[];
   currentLocationID: LocationID;
   autolook: boolean;
 }
 
 
-// TODO: Extract an interface so that we're not so tightly coupled
-//       with GameEngine
+
 export class EngineCharacter extends EventEmitter implements Character, PropContainer {
   currentLocationID: LocationID;
   autolook: boolean;
@@ -42,6 +41,25 @@ export class EngineCharacter extends EventEmitter implements Character, PropCont
 
   async getProps(): Promise<Prop[]> {
     return this.engine.getProps(this.propIDs);
+  }
+
+  async addProp(prop: Prop) {
+    if(this.propIDs.includes(prop.id)) {
+      return false;
+    } else {
+      this.propIDs.push(prop.id);
+      return true;
+    }
+  }
+
+  async removeProp(prop: Prop) {
+    const index = this.propIDs.indexOf(prop.id);
+    if(index < 0) {
+      return false;
+    } else {
+      this.propIDs.splice(index, 1);
+      return true;
+    }
   }
 
   inform(message: string) {

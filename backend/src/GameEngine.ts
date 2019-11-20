@@ -109,11 +109,31 @@ export default class GameEngine extends EventEmitter {
     const _location = {
       name: (params.name || "unnamed"),
 
-      propIDs: [],
+      // TODO: Kinda surprised that I need to cast this explicitly...
+      propIDs: [] as PropID[],
 
       // TODO: Consider converting this into an AsyncIterator
       async getProps(): Promise<Prop[]> {
         return engine.getProps(this.propIDs);
+      },
+
+      async addProp(prop: Prop) {
+        if(this.propIDs.includes(prop.id)) {
+          return false;
+        } else {
+          this.propIDs.push(prop.id);
+          return true;
+        }
+      },
+
+      async removeProp(prop: Prop) {
+        const index = this.propIDs.indexOf(prop.id);
+        if(index < 0) {
+          return false;
+        } else {
+          this.propIDs.splice(index, 1);
+          return true;
+        }
       },
 
       exits: Object.create(null),

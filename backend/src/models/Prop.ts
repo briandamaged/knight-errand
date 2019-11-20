@@ -8,4 +8,7 @@ export interface Prop {
 
 export interface PropContainer {
   getProps(): Promise<Prop[]>;
+
+  addProp(prop: Prop): Promise<boolean>;
+  removeProp(prop: Prop): Promise<boolean>;
 }

@@ -9,8 +9,6 @@ export interface Location extends PropContainer {
 
   getDescription(): string;
 
-  propIDs: PropID[];
-
   getProps(): Promise<Prop[]>;
 
   exits: {

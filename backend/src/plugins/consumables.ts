@@ -130,8 +130,9 @@ export async function eat({sender, target}: {sender: Character, target: Target})
         sender.inform(`You eat the ${prop.name}`);
         prop.beEatenBy({eater: sender});
 
-        // Remove the Prop from the container
-        // container.propIDs = container.propIDs.filter((id)=> id !== prop.id);
+        container.removeProp(prop);
+
+        // TODO: Remove the prop from the rest of the engine
         // delete engine.propMap[prop.id];
       } else {
         sender.inform(`Magic or something prevented you from eating it`);

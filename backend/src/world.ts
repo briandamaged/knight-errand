@@ -8,7 +8,7 @@ import { Edible } from './plugins/consumables';
 import { Prop } from './models/Prop';
 
 
-export function createWorld({engine}: {engine: GameEngine}): void {
+export async function createWorld({engine}: {engine: GameEngine}): Promise<void> {
 
   const townSquare = engine.createLocation({
     id: "townSquare",
@@ -79,7 +79,7 @@ export function createWorld({engine}: {engine: GameEngine}): void {
     },
   });
 
-  townSquare.propIDs.push(trash01.id);
-  generalStore.propIDs.push(apple.id);
-  tavern.propIDs.push(trash02.id);
+  townSquare.addProp(trash01);
+  generalStore.addProp(apple);
+  tavern.addProp(trash02);
 }

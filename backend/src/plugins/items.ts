@@ -77,15 +77,12 @@ export async function get({engine, sender, target}: {engine: GameEngine, sender:
   const location = await sender.getCurrentLocation();
 
   if(location) {
-    const props = await engine.getProps(location.propIDs);
+    const props = await location.getProps();
 
     const p = props.find((pp)=> pp.name === target);
     if(p) {
-      // Remove the item from the location
-      location.propIDs = location.propIDs.filter((id)=> id !== p.id);
-
-      // Place the item into the the sender's inventory
-      sender.propIDs.push(p.id);
+      location.removeProp(p);
+      await sender.addProp(p);
 
       sender.inform(`You pick up the ${p.name}`);
     }
@@ -95,15 +92,15 @@ export async function get({engine, sender, target}: {engine: GameEngine, sender:
 
 
 export async function drop({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
-  const items = await engine.getProps(sender.propIDs);
+  const items = await sender.getProps();
 
   const item = items.find((it)=> it.name === target);
   if(item) {
     const location = await sender.getCurrentLocation();
 
     if(location) {
-      sender.propIDs = sender.propIDs.filter((id)=> id !== item.id);
-      location.propIDs.push(item.id);
+      sender.removeProp(item);
+      location.addProp(item);
       sender.inform(`You drop the ${item.name}`);
     } else {
       sender.inform(`Hmm... better not.  You seem to be floating in the void`);
@@ -116,7 +113,7 @@ export async function drop({engine, sender, target}: {engine: GameEngine, sender
 
 
 export async function items({engine, sender}: {engine: GameEngine, sender: Character}) {
-  const items = await engine.getProps(sender.propIDs);
+  const items = await sender.getProps();
   if(items.length === 0) {
     sender.inform("You are not carrying anything");
   } else {
