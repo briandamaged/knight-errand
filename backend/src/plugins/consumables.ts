@@ -63,14 +63,6 @@ function isDrinkCommand(thing: any): thing is DrinkCommand {
 }
 
 
-
-// TODO: Extract this
-function* chain<OUTPUT>(iterables: Iterable<Iterable<OUTPUT>>): Iterable<OUTPUT> {
-  for(const iter of iterables) {
-    yield* iter;
-  }
-}
-
 // TODO: Extract this
 async function* resolvePropSources({sender}: {sender: Character}): AsyncIterable<PropContainer> {
   yield sender;
