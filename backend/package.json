@@ -7,7 +7,7 @@
     "build": "npm run clean && babel --extensions '.js,.ts' ./src -d dist",
     "check-types": "tsc",
     "clean": "rm -Rf ./dist",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha -r @babel/register -r ts-node/register --recursive ./src/**/*-spec.[tj]s"
   },
   "repository": {
     "type": "git",
@@ -40,8 +40,12 @@
     "@babel/preset-env": "^7.6.2",
     "@babel/preset-typescript": "^7.6.0",
     "@babel/register": "^7.6.2",
+    "@types/chai": "^4.2.5",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.11.6",
     "@types/ws": "^6.0.3",
+    "chai": "^4.2.0",
+    "mocha": "^6.2.2",
     "ts-node": "^8.4.1",
     "typescript": "^3.6.3"
   }
