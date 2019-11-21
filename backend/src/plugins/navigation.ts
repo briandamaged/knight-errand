@@ -1,11 +1,16 @@
 import GameEngine from "../GameEngine";
 import {
-  CommandContext, Command, Character, Direction, LocationID, CommandHandler
+  CommandContext, Command, Direction, CommandHandler
 } from "../models";
+
+import {
+  Location, LocationID
+} from '../models/Location';
 
 import { DepthFirstResolver } from "conditional-love";
 import { WhenNameIs, Chain, Validate, AS } from "./utils";
 import { ParsingContext, withParsingContext } from "../Parser";
+import { Character } from "../models/Character";
 
 
 
@@ -63,15 +68,15 @@ export const resolveNavigation = Chain([
 ]);
 
 
-export function go({engine, sender, direction}: {engine: GameEngine, sender: Character, direction: Direction}) {
-  const location = engine.getLocation(sender.currentLocationID);
+export async function go({engine, sender, direction}: {engine: GameEngine, sender: Character, direction: Direction}) {
+  const location = await sender.getCurrentLocation();
 
   if(location) {
     const destinationID = location.exits[direction];
     if(destinationID) {
       const destination = engine.getLocation(destinationID);
       if(destination) {
-        sender.currentLocationID = destination.id;
+        sender.setCurrentLocation(destination);
         sender.entered(destination);
       } else {
         sender.inform(`Could not load Location with id = ${JSON.stringify(destinationID)}`);
@@ -87,7 +92,7 @@ export function go({engine, sender, direction}: {engine: GameEngine, sender: Cha
 export function teleport({engine, sender, locationID}: {engine: GameEngine, sender: Character, locationID: LocationID}) {
   const location = engine.getLocation(locationID);
   if(location) {
-    sender.currentLocationID = location.id;
+    sender.setCurrentLocation(location);
     sender.entered(location);
   }
 }

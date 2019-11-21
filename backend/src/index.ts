@@ -8,7 +8,7 @@ import {
 } from './world';
 
 import {
-  Command, Character, CommandContext,
+  Command, CommandContext,
 } from './models';
 
 import { resolveNavigation, resolveNavigationInstructions } from './plugins/navigation';
@@ -16,6 +16,8 @@ import { resolveInventoryCommands, resolveInventoryInstructions } from './plugin
 import { resolveDescriptionCommands, resolveDescriptionInstructions } from './plugins/description';
 import { resolveInterpretCommand } from './plugins/interpreter';
 import { Chain } from './plugins/utils';
+import { resolveConsumableInstructions, resolveConsumableCommands } from './plugins/consumables';
+import { Character } from './models/Character';
 
 
 
@@ -24,6 +26,7 @@ const engine = new GameEngine({
     resolveDescriptionInstructions,
     resolveNavigationInstructions,
     resolveInventoryInstructions,
+    resolveConsumableInstructions,
   ]),
 });
 
@@ -40,12 +43,13 @@ engine.install(resolveInterpretCommand);
 engine.install(resolveDescriptionCommands);
 engine.install(resolveNavigation);
 engine.install(resolveInventoryCommands);
+engine.install(resolveConsumableCommands);
 
 
 wss.on('connection', function connection(ws) {
 
   // FIXME: Ability to instantiate a Character without a currentLocationID
-  const player = new Character({
+  const player = engine.createCharacter({
     currentLocationID: "townSquare",
   });
 
@@ -53,7 +57,7 @@ wss.on('connection', function connection(ws) {
     ws.send(message);
   });
 
-  player.on('entered', function(this: Character, location) {
+  player.on('entered', function(this: Character) {
     if(this.autolook) {
       engine.handleCommand({
         sender: player,

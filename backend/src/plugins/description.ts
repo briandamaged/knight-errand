@@ -1,9 +1,10 @@
 
-import { Command, Character, CommandContext, CommandHandler } from "../models";
+import { Command, CommandContext, CommandHandler } from "../models";
 import GameEngine from "../GameEngine";
 import { Validate, WhenNameIs, Chain, AS } from "./utils";
 import { DepthFirstResolver } from "conditional-love";
 import { ParsingContext, withParsingContext, isEnabledWord, isDisabledWord } from "../Parser";
+import { Character } from "../models/Character";
 
 export interface LookCommand extends Command {
   name: "look",
@@ -52,10 +53,10 @@ export const resolveDescriptionCommands = Chain([
 
 
 
-export function look({engine, sender}: {engine: GameEngine, sender: Character}) {
-  const location = engine.getLocation(sender.currentLocationID);
+export async function look({engine, sender}: {engine: GameEngine, sender: Character}) {
+  const location = await sender.getCurrentLocation();
   if(location) {
-    const items = engine.getProps(location.propIDs);
+    const items = await location.getProps();
 
     sender.inform(`
 ${location.name}
