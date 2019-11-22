@@ -6,6 +6,7 @@ import { ParsingContext, withParsingContext } from "../Parser";
 import { Character } from "../models/Character";
 import { Location } from "../models/Location";
 import { Prop } from "../models/Prop";
+import { isProducer, Producer } from "../models/Behaviors";
 
 export interface GetCommand extends Command {
   name: "get";
@@ -74,18 +75,6 @@ export const resolveInventoryCommands = Chain([
 ]);
 
 
-interface Producer {
-  canProduce(target: string): Promise<Boolean>;
-  produce(target: string): Promise<Prop>;
-}
-
-function isProducer(thing: any): thing is Producer {
-  return (
-    typeof(thing.canProduce) === 'function' &&
-    typeof(thing.produce) === 'function'
-  );
-}
-
 async function* getProducers(location: Location): AsyncIterable<Producer> {
   yield location;
   const props = await location.getProps();
@@ -101,11 +90,10 @@ export async function get({sender, target}: {sender: Character, target: string})
 
   if(location) {
     for await(const producer of getProducers(location)) {
-      if(await producer.canProduce(target)) {
-        const item = await producer.produce(target);
+      for await(const produce of producer.tryProduce(target)) {
+        const item = await produce();
         await sender.addProp(item);
-
-        return sender.inform(`You pick up the ${item.name}`);
+        return sender.inform(`You pick up the ${item.name}`)
       }
     }
 

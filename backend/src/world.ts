@@ -30,19 +30,16 @@ const AppleFactory = (
 const TreeFactory = (
   (engine: GameEngine)=>
     function Tree() {
+      const Apple = AppleFactory(engine);
+
       return engine.createProp({
         name: "tree",
 
-        canProduce(target: string) {
-          return (["apple", "fruit"].includes(target))
-        },
-
-        produce(target: string) {
-          if(["apple", "fruit".includes(target)]) {
-            const Apple = AppleFactory(engine);
-            return Apple();
+        async *tryProduce(target: string) {
+          if(["apple", "fruit"].includes(target)) {
+            yield async ()=> Apple();
           }
-        }
+        },
       });
     }
 )

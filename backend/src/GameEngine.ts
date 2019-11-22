@@ -136,19 +136,15 @@ export default class GameEngine extends EventEmitter {
         }
       },
 
-      async canProduce(target: string): Promise<boolean> {
+      async *tryProduce(target: string) {
         const props = await this.getProps();
-        return !!props.find((p)=> p.name === target);
-      },
-
-      async produce(target: string): Promise<Prop> {
-        const props = await this.getProps();
-        const p = props.find((p)=> p.name === target);
-        if(p) {
-          await this.removeProp(p);
-          return p;
-        } else {
-          throw new Error(`Cannot produce ${target}`)
+        for(const p of props) {
+          if(p.name === target) {
+            yield async ()=> {
+              await this.removeProp(p);
+              return p;
+            }
+          }
         }
       },
 
