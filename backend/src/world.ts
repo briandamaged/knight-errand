@@ -34,11 +34,11 @@ const TreeFactory = (
         name: "tree",
 
         canProduce(target: string) {
-          return target === "apple";
+          return (["apple", "fruit"].includes(target))
         },
 
         produce(target: string) {
-          if(target === "apple") {
+          if(["apple", "fruit".includes(target)]) {
             const Apple = AppleFactory(engine);
             return Apple();
           }
