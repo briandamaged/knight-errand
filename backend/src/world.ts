@@ -8,7 +8,50 @@ import { Edible } from './plugins/consumables';
 import { Prop } from './models/Prop';
 
 
+
+const AppleFactory = (
+  (engine: GameEngine)=>
+    function Apple() {
+      return engine.createProp({
+        name: "apple",
+    
+        canBeEatenBy({eater}: {eater: Character}) {
+          return true;
+        },
+    
+        beEatenBy({eater}: {eater: Character}) {
+          eater.inform("Tasty!");
+        },
+      });
+    }
+);
+
+
+const TreeFactory = (
+  (engine: GameEngine)=>
+    function Tree() {
+      return engine.createProp({
+        name: "tree",
+
+        canProduce(target: string) {
+          return target === "apple";
+        },
+
+        produce(target: string) {
+          if(target === "apple") {
+            const Apple = AppleFactory(engine);
+            return Apple();
+          }
+        }
+      });
+    }
+)
+
+
 export async function createWorld({engine}: {engine: GameEngine}): Promise<void> {
+
+  const Apple = AppleFactory(engine);
+  const Tree = TreeFactory(engine);
 
   const townSquare = engine.createLocation({
     id: "townSquare",
@@ -56,28 +99,8 @@ export async function createWorld({engine}: {engine: GameEngine}): Promise<void>
   townSquare.exits.west = blacksmith.id;
   blacksmith.exits.east = townSquare.id;
 
-  const trash01 = engine.createProp({
-    id: "trash01",
-    name: "gawbij",
-  });
-
-  const trash02 = engine.createProp({
-    id: "trash02",
-    name: "trash",
-  });
-
-  const apple = engine.createProp({
-    name: "apple",
-
-    canBeEatenBy({eater}: {eater: Character}) {
-      return true;
-    },
-
-    beEatenBy({eater}: {eater: Character}) {
-      eater.inform("Tasty!");
-    },
-  });
-
+  const tree = Tree();
+  const apple = Apple();
 
   const wine = engine.createProp({
     name: "wine",
@@ -91,8 +114,8 @@ export async function createWorld({engine}: {engine: GameEngine}): Promise<void>
     },
   });
 
-  townSquare.addProp(trash01);
-  townSquare.addProp(trash02);
+
+  townSquare.addProp(tree);
   generalStore.addProp(apple);
   tavern.addProp(wine);
 }

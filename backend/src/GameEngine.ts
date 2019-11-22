@@ -136,6 +136,22 @@ export default class GameEngine extends EventEmitter {
         }
       },
 
+      async canProduce(target: string): Promise<boolean> {
+        const props = await this.getProps();
+        return !!props.find((p)=> p.name === target);
+      },
+
+      async produce(target: string): Promise<Prop> {
+        const props = await this.getProps();
+        const p = props.find((p)=> p.name === target);
+        if(p) {
+          await this.removeProp(p);
+          return p;
+        } else {
+          throw new Error(`Cannot produce ${target}`)
+        }
+      },
+
       exits: Object.create(null),
     };
 
@@ -198,7 +214,7 @@ export default class GameEngine extends EventEmitter {
 
   createProp(_params: Record<string, any>): Prop {
     const prop = {
-      id: (_params.id || `Math.random()`),
+      id: (_params.id || `${Math.random()}`),
       name: (_params.name || "thing"),
     };
 

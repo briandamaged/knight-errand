@@ -11,6 +11,9 @@ export interface Location extends PropContainer {
 
   getProps(): Promise<Prop[]>;
 
+  canProduce(target: string): Promise<boolean>;
+  produce(target: string): Promise<Prop>;
+
   exits: {
     [key: string]: LocationID | undefined,
   };

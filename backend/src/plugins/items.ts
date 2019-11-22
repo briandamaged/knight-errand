@@ -4,6 +4,8 @@ import { WhenNameIs, Validate, Chain, AS } from "./utils";
 import GameEngine from "../GameEngine";
 import { ParsingContext, withParsingContext } from "../Parser";
 import { Character } from "../models/Character";
+import { Location } from "../models/Location";
+import { Prop } from "../models/Prop";
 
 export interface GetCommand extends Command {
   name: "get";
@@ -40,7 +42,6 @@ export function isItemsCommand(thing: any): thing is ItemsCommand {
 
 export const handleGetCommand = Validate(isGetCommand)(function(ctx) {
   get({
-    engine: ctx.engine,
     sender: ctx.sender,
     target: ctx.command.target,
   });
@@ -73,19 +74,42 @@ export const resolveInventoryCommands = Chain([
 ]);
 
 
-export async function get({engine, sender, target}: {engine: GameEngine, sender: Character, target?: string}) {
+interface Producer {
+  canProduce(target: string): Promise<Boolean>;
+  produce(target: string): Promise<Prop>;
+}
+
+function isProducer(thing: any): thing is Producer {
+  return (
+    typeof(thing.canProduce) === 'function' &&
+    typeof(thing.produce) === 'function'
+  );
+}
+
+async function* getProducers(location: Location): AsyncIterable<Producer> {
+  yield location;
+  const props = await location.getProps();
+  for(const p of props) {
+    if(isProducer(p)) {
+      yield p;
+    }
+  }
+}
+
+export async function get({sender, target}: {sender: Character, target: string}) {
   const location = await sender.getCurrentLocation();
 
   if(location) {
-    const props = await location.getProps();
+    for await(const producer of getProducers(location)) {
+      if(await producer.canProduce(target)) {
+        const item = await producer.produce(target);
+        await sender.addProp(item);
 
-    const p = props.find((pp)=> pp.name === target);
-    if(p) {
-      location.removeProp(p);
-      await sender.addProp(p);
-
-      sender.inform(`You pick up the ${p.name}`);
+        return sender.inform(`You pick up the ${item.name}`);
+      }
     }
+
+    sender.inform(`You don't see any ${target}`);
   }
 }
 
