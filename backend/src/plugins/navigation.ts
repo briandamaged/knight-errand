@@ -100,7 +100,7 @@ export function teleport({engine, sender, locationID}: {engine: GameEngine, send
 
 
 
-const directionMap = {
+export const directionMap = {
   north: ["north", "n"],
   south: ["south", "s"],
   east: ["east", "e"],
@@ -109,15 +109,31 @@ const directionMap = {
   northwest: ["northwest", "nw"],
   southeast: ["southeast", "se"],
   southwest: ["southwest", "sw"],
+  up: ["up"],
+  down: ["down"],
 };
 
 
+const aliasMap: Record<string, string | undefined> = {};
+for(const [direction, aliases] of Object.entries(directionMap)) {
+  for(const alias of aliases) {
+    aliasMap[alias] = direction;
+  }
+}
+
+
+export function directionFor(alias: string) {
+  return aliasMap[alias] || alias;
+}
+
 
 export function* resolveGoInstruction(ctx: ParsingContext): Iterable<Command> {
+
   if(ctx.words[0] === "go") {
+    const direction = directionFor(ctx.words[1]);
     yield AS<GoCommand>({
       name: "go",
-      direction: ctx.words[1],
+      direction: direction,
     });
   }
 

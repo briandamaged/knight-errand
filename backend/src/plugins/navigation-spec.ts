@@ -2,44 +2,42 @@
 import {expect} from 'chai';
 
 import {
+  directionMap,
   resolveNavigationInstructions,
 } from './navigation';
 
 describe('resolveNavigationInstructions', function() {
 
-  function DIRECTION_EXAMPLES(direction: string) {
-    return [
-      {
-        instruction: `go ${direction}`,
-        commands: [{
-          name: "go",
-          direction: direction,
-        }],
-      },
-      {
-        instruction: direction[0],
-        commands: [{
-          name: "go",
-          direction: direction,
-        }],
-      },
-      {
-        instruction: direction,
-        commands: [{
-          name: "go",
-          direction: direction,
-        }],
-      },      
-    ];
+
+
+  function* createExamples() {
+    for(const [direction, aliases] of Object.entries(directionMap)) {
+      for(const alias of aliases) {
+        for(const instruction of [alias, `go ${alias}`]) {
+          yield {
+            instruction: instruction,
+            commands: [{
+              name: "go",
+              direction: direction,
+            }]
+          };
+        }
+      }
+    }
+
+    yield {
+      instruction: "some unrelated instruction",
+      commands: [],
+    };
+
+    yield {
+      instruction: "",
+      commands: [],
+    };
   }
 
-  const examples = [
-    ...DIRECTION_EXAMPLES("north"),
-    ...DIRECTION_EXAMPLES("south"),
-  ];
 
-
-  for(const {instruction, commands} of examples) {
+  for(const {instruction, commands} of createExamples()) {
     context(`Given ${JSON.stringify(instruction)}`, function() {
       it(`resolves with ${JSON.stringify(commands)}`, function() {
         const cmds = Array.from(resolveNavigationInstructions(instruction));
